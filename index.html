@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Super IPAS Bros - Ekosistem, Rantai Makanan & Simbiosis (Kelas 5 SD)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky-blue: #5c94fc;
+            --brick-red: #c84c0c;
+            --gold: #fcbcb0;
+        }
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Fredoka', sans-serif;
+            touch-action: manipulation;
+        }
+        .pixel-font {
+            font-family: 'Press Start 2P', monospace;
+        }
+        .text-outline {
+            text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 3px 0 #000;
+        }
+        .text-outline-sm {
+            text-shadow: 1.5px 1.5px 0 #000, -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000;
+        }
+        .retro-box {
+            background: rgba(15, 23, 42, 0.92);
+            border: 3px solid #ffffff;
+            box-shadow: 0 6px 0 #000000, inset 0 0 0 3px #000000;
+        }
+        .retro-btn {
+            border: 3px solid #000;
+            box-shadow: inset -3px -3px 0px rgba(0,0,0,0.35), inset 3px 3px 0px rgba(255,255,255,0.4), 0 4px 0 #000;
+            transition: transform 0.08s, box-shadow 0.08s;
+        }
+        .retro-btn:active {
+            transform: translateY(3px);
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.35), 0 1px 0 #000;
+        }
+        /* Gaya Khusus Tombol Konsol Arah & Lompat Agar Selalu Terlihat Jelas di Semua Layar */
+        .console-pad-btn {
+            border: 3px solid #ffffff;
+            box-shadow: 0 5px 0 #000000, 0 8px 16px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.45);
+            transition: transform 0.06s, background-color 0.06s;
+        }
+        .console-pad-btn:active, .console-pad-btn.pressed {
+            transform: translateY(4px) scale(0.96);
+            box-shadow: 0 1px 0 #000000, inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        /* Animasi Keren untuk Halaman Awal */
+        @keyframes floatHero {
+            0%, 100% { transform: translateY(0px) rotate(-1deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(250, 204, 21, 0.4), 0 8px 0 #000; }
+            50% { box-shadow: 0 0 28px rgba(250, 204, 21, 0.85), 0 8px 0 #000; }
+        }
+        @keyframes cloudMove {
+            0% { transform: translateX(-10%); }
+            50% { transform: translateX(10%); }
+            100% { transform: translateX(-10%); }
+        }
+        .animate-float-hero {
+            animation: floatHero 3.2s ease-in-out infinite;
+        }
+        .animate-float-hero-delayed {
+            animation: floatHero 3.5s ease-in-out 1.2s infinite;
+        }
+        .hero-card-glow {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        .animate-cloud-slow {
+            animation: cloudMove 14s ease-in-out infinite;
+        }
+        .mario-brick-footer {
+            background-color: #c84c0c;
+            background-image: 
+                linear-gradient(335deg, #000 23px, transparent 23px),
+                linear-gradient(155deg, #000 23px, transparent 23px),
+                linear-gradient(335deg, #000 23px, transparent 23px),
+                linear-gradient(155deg, #000 23px, transparent 23px);
+            background-size: 58px 58px;
+            border-top: 4px solid #000;
+        }
+        /* Custom Scrollbar for Materi & Level Modal */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 4px;
+        }
+        /* Responsif Adaptif untuk HP, Tablet, Laptop & Papan Layar Interaktif (Portrait & Landscape) */
+        @media (max-height: 540px) and (orientation: landscape) {
+            #topHudContainer {
+                padding: 3px 8px !important;
+                gap: 2px !important;
+            }
+            #toastBanner {
+                display: none !important;
+            }
+            #questionHUD.q-pos-top {
+                top: 64px !important;
+                width: 96% !important;
+                max-width: 680px !important;
+            }
+            #questionCardInner {
+                padding: 5px 10px !important;
+            }
+            #qText {
+                font-size: 11px !important;
+                margin-bottom: 4px !important;
+                padding: 4px 8px !important;
+                line-height: 1.25 !important;
+            }
+            .opt-box-item {
+                padding: 2px 5px !important;
+            }
+            #touchControlsBar {
+                bottom: 6px !important;
+            }
+            .console-pad-btn {
+                height: 44px !important;
+            }
+        }
+        @media (orientation: portrait) {
+            #questionHUD.q-pos-top {
+                top: 132px !important;
+                width: 96% !important;
+            }
+            #touchControlsBar {
+                bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+        }
+        @media (min-width: 1400px) {
+            #questionHUD {
+                max-width: 1050px !important;
+            }
+            #qText {
+                font-size: 1.25rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="relative w-screen h-[100dvh] overflow-hidden select-none bg-[#5c94fc]">
+
+    <!-- GAME CANVAS -->
+    <canvas id="gameCanvas" tabindex="0" class="outline-none"></canvas>
+
+    <!-- TOP HUD (Sesuai Referensi Gambar & Adaptif Semua Layar) -->
+    <div id="topHudContainer" class="absolute top-0 left-0 w-full z-20 p-1.5 sm:px-5 sm:py-2.5 pointer-events-none flex flex-col gap-1">
+        <!-- Baris Status Utama -->
+        <div class="flex justify-between items-start w-full pixel-font text-white text-[9px] sm:text-xs md:text-sm xl:text-base tracking-wider">
+            <div class="flex flex-col items-start">
+                <span class="text-red-400 text-outline-sm">MARIO</span>
+                <span id="hudScore" class="text-outline-sm mt-0.5">000000</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-yellow-300 text-outline-sm">KOIN</span>
+                <div class="flex items-center gap-1 mt-0.5">
+                    <span class="inline-block w-2.5 h-3.5 bg-yellow-400 border border-black rounded-sm animate-pulse"></span>
+                    <span id="hudCoins" class="text-outline-sm">x00</span>
+                </div>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-green-400 text-outline-sm">KUIS</span>
+                <span id="hudQuiz" class="text-outline-sm mt-0.5">1/10</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-blue-200 text-outline-sm">WORLD</span>
+                <span id="hudWorld" class="text-outline-sm mt-0.5">1-1</span>
+            </div>
+            <div class="flex flex-col items-end">
+                <span class="text-yellow-400 text-outline-sm">TIME</span>
+                <span id="hudTime" class="text-outline-sm mt-0.5">400</span>
+            </div>
+        </div>
+
+        <!-- Baris Tombol Aksi Kanan Atas -->
+        <div class="flex justify-between items-center w-full mt-0.5 pointer-events-auto gap-1">
+            <!-- Indikator Nyawa / Hati -->
+            <div id="hudLives" class="flex items-center gap-0.5 sm:gap-1 bg-black/50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-white/40 text-[10px] sm:text-sm shrink-0">
+                <span>❤️</span><span>❤️</span><span>❤️</span>
+            </div>
+
+            <div class="flex flex-wrap gap-1 sm:gap-1.5 justify-end">
+                <button id="btnPause" onclick="togglePauseGame()" class="retro-btn bg-purple-600 hover:bg-purple-500 text-white pixel-font text-[7px] sm:text-[10px] xl:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded flex items-center gap-1">
+                    ⏸️ <span class="hidden xs:inline sm:inline">PAUSE</span>
+                </button>
+                <button onclick="returnToMainMenu()" class="retro-btn bg-rose-600 hover:bg-rose-500 text-white pixel-font text-[7px] sm:text-[10px] xl:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded flex items-center gap-1">
+                    🏠 <span class="hidden xs:inline sm:inline">MENU</span>
+                </button>
+                <button id="btnBgm" onclick="toggleBGM()" class="retro-btn bg-slate-800 text-white pixel-font text-[7px] sm:text-[10px] xl:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-green-400" id="bgmDot"></span> BGM
+                </button>
+                <button id="btnSfx" onclick="toggleSFX()" class="retro-btn bg-slate-800 text-white pixel-font text-[7px] sm:text-[10px] xl:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-green-400" id="sfxDot"></span> SFX
+                </button>
+                <button onclick="toggleFullscreenMode()" class="retro-btn bg-teal-600 hover:bg-teal-500 text-white pixel-font text-[7px] sm:text-[10px] xl:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded" title="Layar Penuh (Cocok untuk Papan Interaktif & HP)">
+                    ⛶
+                </button>
+                <button onclick="openLevelSelectModal()" class="retro-btn bg-blue-600 hover:bg-blue-500 text-white pixel-font text-[7px] sm:text-[10px] xl:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded">
+                    🗺️ <span class="hidden sm:inline">LEVEL</span>
+                </button>
+                <button onclick="openMateriModal()" class="retro-btn bg-amber-500 hover:bg-amber-400 text-white pixel-font text-[7px] sm:text-[10px] xl:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded">
+                    📖 <span class="hidden sm:inline">MATERI</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Kotak Notifikasi / Pesan Edukasi (Mirip Kotak Pesan Hitam di Gambar Referensi) -->
+        <div id="toastBanner" class="mx-auto mt-0.5 max-w-xl w-full pointer-events-none transition-all duration-200">
+            <div id="toastBox" class="retro-box px-3 py-1 sm:py-1.5 rounded-lg text-center">
+                <p id="toastText" class="pixel-font text-yellow-300 text-[8px] sm:text-[10px] leading-relaxed">
+                    PANAH / WASD / SENTUH KONSOL: Gerak & Lompat | Sundul Blok [A/B/C/D] untuk Menjawab!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL PERTANYAAN & OPSI JAWABAN (Diturunkan Sedikit Agar Semua Menu Atas Terlihat Jelas & Diberi Background Kontras Tinggi) -->
+    <div id="questionHUD" class="q-pos-top fixed top-32 sm:top-36 left-1/2 -translate-x-1/2 z-20 w-[96%] max-w-3xl pointer-events-auto transition-all duration-200">
+        <div id="questionCardInner" class="bg-slate-950/95 border-3 border-yellow-400 rounded-xl p-2 sm:p-3 xl:p-4 shadow-[0_8px_20px_rgba(0,0,0,0.85)] backdrop-blur-xs">
+            <div class="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
+                <span id="qBadge" class="pixel-font text-[8px] sm:text-[10px] xl:text-xs bg-yellow-400 text-black px-2.5 py-0.5 rounded font-bold border border-black shadow">
+                    LEVEL 1 • SOAL #1
+                </span>
+                <div class="flex items-center gap-1 sm:gap-1.5">
+                    <span id="qStatusBadge" class="pixel-font text-[7px] sm:text-[9px] xl:text-[10px] text-emerald-300 hidden md:inline">
+                        🎯 SUNDUL BLOK JAWABAN DI BAWAH!
+                    </span>
+                    <button onclick="cycleQuestionPosition()" id="btnPosQuestion" class="bg-indigo-700 hover:bg-indigo-600 text-white border border-indigo-300 rounded px-1.5 py-0.5 pixel-font text-[7px] sm:text-[8px]" title="Pindahkan Posisi Kotak Soal (Atas / Tengah / Bawah)">
+                        ↕ POSISI SOAL
+                    </button>
+                    <button onclick="toggleMinimizeQuestion()" id="btnMinQuestion" class="bg-slate-700 hover:bg-slate-600 text-yellow-300 border border-yellow-400/60 rounded px-1.5 py-0.5 pixel-font text-[7px] sm:text-[8px]" title="Kecilkan/Besarkan Panel Soal">
+                        ▲ KECILKAN
+                    </button>
+                </div>
+            </div>
+            <div id="qCollapsibleBody">
+                <!-- Teks Pertanyaan dengan Background Warna Kontras Tinggi Agar Terlihat Sangat Jelas -->
+                <div class="bg-amber-300 border-2 border-black rounded-lg px-2.5 py-1.5 sm:px-3.5 sm:py-2 mb-2 shadow-inner">
+                    <p id="qText" class="text-slate-950 font-extrabold text-xs sm:text-sm md:text-base xl:text-lg leading-snug tracking-normal">
+                        Memuat soal...
+                    </p>
+                </div>
+                <!-- Grid 4 Opsi Jawaban dengan Warna Kontras Tegas -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+                    <div id="optBox0" class="opt-box-item bg-red-900 border-2 border-red-300 rounded-lg px-2 py-1 sm:py-1.5 flex items-center gap-1.5 shadow">
+                        <span class="pixel-font text-[9px] sm:text-xs bg-red-500 border border-white text-white w-5 h-5 sm:w-6 sm:h-6 rounded flex items-center justify-center shrink-0">A</span>
+                        <span id="optText0" class="text-yellow-100 text-[10px] sm:text-xs xl:text-sm font-bold leading-tight">Opsi A</span>
+                    </div>
+                    <div id="optBox1" class="opt-box-item bg-blue-900 border-2 border-blue-300 rounded-lg px-2 py-1 sm:py-1.5 flex items-center gap-1.5 shadow">
+                        <span class="pixel-font text-[9px] sm:text-xs bg-blue-500 border border-white text-white w-5 h-5 sm:w-6 sm:h-6 rounded flex items-center justify-center shrink-0">B</span>
+                        <span id="optText1" class="text-yellow-100 text-[10px] sm:text-xs xl:text-sm font-bold leading-tight">Opsi B</span>
+                    </div>
+                    <div id="optBox2" class="opt-box-item bg-emerald-900 border-2 border-emerald-300 rounded-lg px-2 py-1 sm:py-1.5 flex items-center gap-1.5 shadow">
+                        <span class="pixel-font text-[9px] sm:text-xs bg-emerald-500 border border-white text-white w-5 h-5 sm:w-6 sm:h-6 rounded flex items-center justify-center shrink-0">C</span>
+                        <span id="optText2" class="text-yellow-100 text-[10px] sm:text-xs xl:text-sm font-bold leading-tight">Opsi C</span>
+                    </div>
+                    <div id="optBox3" class="opt-box-item bg-purple-900 border-2 border-purple-300 rounded-lg px-2 py-1 sm:py-1.5 flex items-center gap-1.5 shadow">
+                        <span class="pixel-font text-[9px] sm:text-xs bg-purple-500 border border-white text-white w-5 h-5 sm:w-6 sm:h-6 rounded flex items-center justify-center shrink-0">D</span>
+                        <span id="optText3" class="text-yellow-100 text-[10px] sm:text-xs xl:text-sm font-bold leading-tight">Opsi D</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOMBOL BENDERA, POSISI SOAL & POSISI KONSOL (Kanan Tengah - Nyaman untuk HP, Tablet, Laptop & Papan Interaktif Digital) -->
+    <div class="fixed right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2 pointer-events-auto">
+        <button onclick="teleportToActiveQuestion()" title="Lompat ke Soal Aktif" class="w-10 h-10 sm:w-12 sm:h-12 xl:w-14 xl:h-14 rounded-full bg-slate-800/90 hover:bg-slate-700 border-2 border-white text-white text-base sm:text-xl flex items-center justify-center shadow-lg active:scale-90 transition">
+            🚩
+        </button>
+        <button onclick="cycleControlLayout()" title="Ubah Posisi Konsol Arah (Standar / Tengah / Kiri / Kanan / Atas)" class="w-10 h-10 sm:w-12 sm:h-12 xl:w-14 xl:h-14 rounded-full bg-indigo-700/90 hover:bg-indigo-600 border-2 border-yellow-300 text-white text-base sm:text-xl flex items-center justify-center shadow-lg active:scale-90 transition">
+            🎮
+        </button>
+        <button onclick="cycleQuestionPosition()" title="Ubah Posisi Kotak Soal (Atas / Bawah / Kiri / Kanan)" class="w-10 h-10 sm:w-12 sm:h-12 xl:w-14 xl:h-14 rounded-full bg-amber-600/90 hover:bg-amber-500 border-2 border-white text-white text-xs sm:text-sm font-bold flex items-center justify-center shadow-lg active:scale-90 transition pixel-font">
+            ❓
+        </button>
+    </div>
+
+    <!-- KONTROL KONSOL ARAH & LOMPAT (SELALU TERLIHAT JELAS DI HP, LAPTOP, TABLET & PAPAN INTERAKTIF BAIK PORTRAIT MAUPUN LANDSCAPE) -->
+    <div id="touchControlsBar" class="fixed bottom-3 sm:bottom-4 left-0 w-full z-30 px-3 sm:px-6 xl:px-10 flex justify-between items-end pointer-events-none transition-all duration-200" style="padding-bottom: env(safe-area-inset-bottom, 4px);">
+        <!-- D-Pad Kiri, Kanan & Tombol Lompat Kiri (Dock Konsol Terlihat Jelas) -->
+        <div id="dpadGroup" class="flex gap-2 sm:gap-3 xl:gap-4 pointer-events-auto items-center bg-slate-950/80 border-2 border-yellow-400/80 p-1.5 sm:p-2 rounded-2xl shadow-2xl backdrop-blur-xs">
+            <button id="btnLeft" class="console-pad-btn w-14 h-12 sm:w-16 sm:h-14 xl:w-20 xl:h-16 rounded-xl bg-gradient-to-b from-slate-700 to-slate-900 hover:from-slate-600 hover:to-slate-800 active:from-yellow-500 active:to-amber-600 text-white flex flex-col items-center justify-center touch-none">
+                <span class="text-lg sm:text-2xl xl:text-3xl leading-none">◀</span>
+                <span class="pixel-font text-[7px] sm:text-[8px] text-yellow-300 mt-0.5">KIRI</span>
+            </button>
+            <button id="btnRight" class="console-pad-btn w-14 h-12 sm:w-16 sm:h-14 xl:w-20 xl:h-16 rounded-xl bg-gradient-to-b from-slate-700 to-slate-900 hover:from-slate-600 hover:to-slate-800 active:from-yellow-500 active:to-amber-600 text-white flex flex-col items-center justify-center touch-none">
+                <span class="text-lg sm:text-2xl xl:text-3xl leading-none">▶</span>
+                <span class="pixel-font text-[7px] sm:text-[8px] text-yellow-300 mt-0.5">KANAN</span>
+            </button>
+        </div>
+
+        <!-- Panel Pengaturan Cepat Konsol & Soal di Tengah Bawah (Tampil di Laptop, Tablet & Papan Interaktif) -->
+        <div id="bottomHintBox" class="hidden md:flex items-center gap-2 bg-slate-950/85 border-2 border-white/60 px-3 py-1.5 rounded-xl text-center pointer-events-auto shadow-xl">
+            <span class="pixel-font text-[8px] xl:text-[9px] text-amber-200">
+                KONSOL AKTIF (SENTUH / KLIK / KEYBOARD)
+            </span>
+            <button onclick="cycleControlLayout()" class="bg-indigo-600 hover:bg-indigo-500 text-white border border-yellow-300 px-2 py-1 rounded pixel-font text-[7px] xl:text-[8px]">
+                🎮 POSISI KONSOL
+            </button>
+            <button onclick="cycleQuestionPosition()" class="bg-amber-600 hover:bg-amber-500 text-white border border-white px-2 py-1 rounded pixel-font text-[7px] xl:text-[8px]">
+                ❓ POSISI SOAL
+            </button>
+        </div>
+
+        <!-- Tombol Lompat Kanan (Dock Konsol Merah Terlihat Jelas) -->
+        <div id="jumpGroup" class="pointer-events-auto flex items-center bg-slate-950/80 border-2 border-yellow-400/80 p-1.5 sm:p-2 rounded-2xl shadow-2xl backdrop-blur-xs">
+            <button id="btnJump" class="console-pad-btn w-20 h-12 sm:w-24 sm:h-14 xl:w-28 xl:h-16 rounded-xl bg-gradient-to-b from-red-500 to-red-700 hover:from-red-400 hover:to-red-600 active:from-emerald-400 active:to-emerald-600 text-white pixel-font text-[9px] sm:text-xs xl:text-sm flex flex-col items-center justify-center gap-0.5 touch-none">
+                <span class="text-base sm:text-xl xl:text-2xl leading-none">▲</span>
+                <span>LOMPAT</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 1: LAYAR MULAI (START SCREEN - DESAIN BARU LEBIH KEREN & ATRAKTIF) -->
+    <div id="startModal" class="fixed inset-0 z-50 bg-gradient-to-b from-[#1e3a8a]/90 via-[#3b82f6]/85 to-[#0f172a]/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-hidden">
+        
+        <!-- Dekorasi Awan & Blok Retro Melayang di Background -->
+        <div class="absolute top-6 left-8 opacity-30 pointer-events-none hidden sm:block animate-cloud-slow">
+            <div class="w-28 h-9 bg-white border-4 border-black rounded-sm relative">
+                <div class="w-16 h-6 bg-white border-t-4 border-l-4 border-r-4 border-black absolute -top-6 left-5"></div>
+            </div>
+        </div>
+        <div class="absolute top-12 right-12 opacity-30 pointer-events-none hidden sm:block animate-cloud-slow" style="animation-delay: -5s;">
+            <div class="w-24 h-8 bg-white border-4 border-black rounded-sm relative">
+                <div class="w-14 h-5 bg-white border-t-4 border-l-4 border-r-4 border-black absolute -top-5 left-4"></div>
+            </div>
+        </div>
+
+        <!-- Kontainer Utama Start Screen -->
+        <div class="retro-box hero-card-glow max-w-4xl w-full max-h-[94vh] overflow-y-auto rounded-3xl text-white relative border-4 border-yellow-400 bg-slate-900/95 flex flex-col justify-between">
+            
+            <!-- Pita Header Atas ala Nintendo / Super Mario -->
+            <div class="bg-gradient-to-r from-red-700 via-red-600 to-red-700 border-b-4 border-black px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex flex-col items-start gap-1.5">
+                    <!-- Gambar Imgur (TnzAyZW.png) di Kiri Atas, tepat di atas tulisan Kurikulum Merdeka -->
+                    <div class="bg-white/15 backdrop-blur-xs border-2 border-yellow-300 rounded-xl px-3 py-1.5 shadow-md flex items-center gap-2">
+                        <img 
+                            src="https://imgur.com/TnzAyZW.png" 
+                            alt="Logo Atas Kurikulum Merdeka" 
+                            referrerpolicy="no-referrer"
+                            onerror="this.onerror=null; this.src='https://placehold.co/120x60/5c94fc/ffffff?text=LOGO';"
+                            class="h-14 sm:h-16 w-auto object-contain drop-shadow-[0_3px_3px_rgba(0,0,0,0.6)]"
+                        />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-yellow-300 border-2 border-black animate-ping"></span>
+                        <span class="pixel-font text-[9px] sm:text-[11px] text-yellow-300 tracking-wider">
+                            ⭐ KURIKULUM MERDEKA • KELAS 5 SD
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end gap-1 self-end sm:self-center">
+                    <div class="bg-black/40 border border-white/40 px-2.5 py-1 rounded-full pixel-font text-[8px] sm:text-[9px] text-emerald-300">
+                        5 WORLD • 50 KUIS INTERAKTIF
+                    </div>
+                    <div class="text-[11px] sm:text-xs font-bold text-yellow-200 tracking-wide drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                        Karya : Aris Setyonugroho, S.Pd. dari Cabang Selogiri
+                    </div>
+                </div>
+            </div>
+
+            <!-- Konten Utama Tengah (2 Kolom di Layar Lebar: Kotak Biru Gambar Imgur + Judul SUPER IPAS BROS) -->
+            <div class="p-4 sm:p-6 md:p-7">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center mb-5">
+                    
+                    <!-- Kolom Kiri: Kotak Warna Biru berisi Gambar Imgur 2 (6Ms0PaL.png) di sebelah kiri tulisan SUPER IPAS BROS -->
+                    <div class="md:col-span-5 flex flex-col items-center justify-center relative py-2">
+                        <!-- Cahaya Latar Belakang Gambar -->
+                        <div class="absolute w-52 h-52 sm:w-64 sm:h-64 bg-gradient-to-tr from-yellow-400/40 via-sky-400/35 to-emerald-400/40 rounded-full blur-xl pointer-events-none"></div>
+                        
+                        <!-- Dekorasi Blok [?] Kiri Atas & Koin Kanan Atas -->
+                        <div class="absolute -top-2 left-2 sm:left-4 z-20 w-8 h-8 sm:w-9 sm:h-9 bg-amber-400 border-2 border-black rounded flex items-center justify-center pixel-font text-black text-xs shadow-md animate-bounce">
+                            ?
+                        </div>
+                        <div class="absolute -top-2 right-2 sm:right-4 z-20 w-8 h-8 sm:w-9 sm:h-9 bg-yellow-300 border-2 border-black rounded-full flex items-center justify-center pixel-font text-black text-xs shadow-md animate-pulse">
+                            🪙
+                        </div>
+                        <div class="absolute -bottom-2 right-2 sm:right-5 z-20 w-8 h-8 sm:w-9 sm:h-9 bg-emerald-400 border-2 border-black rounded flex items-center justify-center pixel-font text-black text-xs shadow-md animate-bounce" style="animation-delay: 0.3s;">
+                            🍄
+                        </div>
+
+                        <!-- Kotak Warna Biru Sebelah Kiri Tulisan SUPER IPAS BROS -->
+                        <div class="relative z-10 w-full max-w-[310px] bg-gradient-to-b from-[#5c94fc] via-[#3b82f6] to-[#1e3a8a] border-4 border-white rounded-2xl p-3.5 shadow-[0_8px_0_#000] overflow-hidden flex flex-col items-center">
+                            <!-- Label Panggung Retro -->
+                            <div class="text-center mb-2">
+                                <span class="bg-black/60 border border-yellow-300/80 text-yellow-300 pixel-font text-[8px] px-2.5 py-1 rounded-full">
+                                    ✨ PETUALANGAN EKOSISTEM ✨
+                                </span>
+                            </div>
+
+                            <!-- Gambar Imgur 2 (6Ms0PaL.png) Tampil Penuh & Keren di Kotak Biru -->
+                            <div class="w-full bg-white/15 backdrop-blur-xs border-2 border-yellow-300/90 rounded-xl p-3 flex flex-col items-center justify-center shadow-inner animate-float-hero hover:scale-105 transition">
+                                <img 
+                                    src="https://imgur.com/6Ms0PaL.png" 
+                                    alt="Super IPAS Bros Hero" 
+                                    referrerpolicy="no-referrer"
+                                    onerror="this.onerror=null; this.src='https://placehold.co/220x220/10b981/ffffff?text=SUPER+IPAS';"
+                                    class="w-36 h-36 sm:w-44 sm:h-44 object-contain drop-shadow-[0_6px_6px_rgba(0,0,0,0.65)]"
+                                />
+                                <span class="mt-2 pixel-font text-[8px] bg-emerald-500 text-black px-3 py-1 rounded border-2 border-black font-bold shadow">
+                                    ⭐ JUARA IPAS KELAS 5 ⭐
+                                </span>
+                            </div>
+
+                            <!-- Dekorasi Pipa & Lantai Bata Mini di Bawah Karakter -->
+                            <div class="mt-3 w-full flex items-end justify-between px-2">
+                                <div class="w-6 h-5 bg-[#00c800] border-2 border-black rounded-t-xs"></div>
+                                <div class="pixel-font text-[7px] text-yellow-200">WORLD 1-1 ★ 1-5</div>
+                                <div class="w-6 h-5 bg-[#00c800] border-2 border-black rounded-t-xs"></div>
+                            </div>
+                            <div class="h-3.5 w-full bg-[#c84c0c] border-2 border-black rounded-sm flex overflow-hidden">
+                                <div class="w-1/5 border-r-2 border-black"></div>
+                                <div class="w-1/5 border-r-2 border-black"></div>
+                                <div class="w-1/5 border-r-2 border-black"></div>
+                                <div class="w-1/5 border-r-2 border-black"></div>
+                                <div class="w-1/5"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Judul Signboard SUPER IPAS BROS, Fitur Pedagogis & Tombol Aksi -->
+                    <div class="md:col-span-7 text-center md:text-left flex flex-col items-center md:items-start">
+                        <!-- Plakat Judul Utama ala Super Mario Bros -->
+                        <div class="inline-block bg-gradient-to-b from-[#e11d48] via-[#be123c] to-[#881337] border-4 border-yellow-300 rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4 shadow-[0_6px_0_#000] mb-3 relative w-full overflow-hidden">
+                            <!-- Paku Sudut Plakat -->
+                            <span class="w-2.5 h-2.5 bg-yellow-200 border border-black rounded-full absolute top-2 left-2"></span>
+                            <span class="w-2.5 h-2.5 bg-yellow-200 border border-black rounded-full absolute top-2 right-2"></span>
+                            <span class="w-2.5 h-2.5 bg-yellow-200 border border-black rounded-full absolute bottom-2 left-2"></span>
+                            <span class="w-2.5 h-2.5 bg-yellow-200 border border-black rounded-full absolute bottom-2 right-2"></span>
+
+                            <div class="flex items-center justify-center md:justify-between gap-3">
+                                <div>
+                                    <div class="pixel-font text-[8px] sm:text-[10px] text-yellow-200 tracking-widest mb-1.5">
+                                        🌟 GAME EDUKASI INTERAKTIF IPAS 🌟
+                                    </div>
+                                    <h1 class="pixel-font text-xl sm:text-3xl lg:text-4xl text-yellow-300 text-outline tracking-wide leading-tight">
+                                        SUPER IPAS BROS
+                                    </h1>
+                                    <div class="mt-1.5 inline-flex flex-wrap gap-1.5 justify-center md:justify-start">
+                                        <span class="bg-black/45 border border-yellow-300/60 text-yellow-200 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full">
+                                            🌿 Ekosistem
+                                        </span>
+                                        <span class="bg-black/45 border border-emerald-300/60 text-emerald-200 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full">
+                                            🌾 Rantai Makanan
+                                        </span>
+                                        <span class="bg-black/45 border border-sky-300/60 text-sky-200 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full">
+                                            🦋 Simbiosis
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-slate-200 text-xs sm:text-sm leading-relaxed mb-3 bg-slate-800/90 border-2 border-slate-600 rounded-xl p-3 shadow-inner">
+                            Selamat datang di petualangan seru <b>IPAS Kelas 5 SD</b>! Kendalikan Mario melewati rintangan, injak Goomba, dan <b>sundul blok jawaban [A], [B], [C], atau [D]</b> dari bawah untuk menaklukkan <b>5 Level (50 Soal)</b>!
+                        </p>
+
+                        <!-- Tombol Aksi Utama (Mulai & Materi) -->
+                        <div class="flex flex-col sm:flex-row gap-3 w-full mb-3">
+                            <button onclick="startGame(0)" class="retro-btn bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-300 hover:to-emerald-500 text-black pixel-font text-xs sm:text-sm px-6 py-3.5 rounded-xl font-bold flex-1 flex items-center justify-center gap-2 shadow-lg">
+                                <span>▶</span> <span>MULAI BERMAIN</span>
+                            </button>
+                            <button onclick="openMateriModal()" class="retro-btn bg-gradient-to-b from-amber-300 to-amber-500 hover:from-amber-200 hover:to-amber-400 text-black pixel-font text-xs px-5 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2">
+                                <span>📖</span> <span>MATERI IPAS</span>
+                            </button>
+                        </div>
+
+                        <!-- Baris Mode Informasi Pedagogis Menonjol (Petunjuk, Tujuan Pembelajaran, Capaian Pembelajaran) -->
+                        <div class="w-full bg-slate-800/80 border-2 border-indigo-400/50 rounded-2xl p-2.5">
+                            <div class="pixel-font text-[8px] sm:text-[9px] text-indigo-200 mb-2 text-center md:text-left">
+                                📌 PANDUAN & KURIKULUM PEMBELAJARAN:
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <button onclick="openInfoModal('petunjuk')" class="retro-btn bg-gradient-to-b from-sky-400 to-sky-600 hover:from-sky-300 hover:to-sky-500 text-black pixel-font text-[8px] sm:text-[9px] py-2.5 px-2 rounded-xl font-bold flex items-center justify-center gap-1">
+                                    <span>🎮</span> <span>PETUNJUK BERMAIN</span>
+                                </button>
+                                <button onclick="openInfoModal('tp')" class="retro-btn bg-gradient-to-b from-purple-500 to-purple-700 hover:from-purple-400 hover:to-purple-600 text-white pixel-font text-[8px] sm:text-[9px] py-2.5 px-2 rounded-xl font-bold flex items-center justify-center gap-1">
+                                    <span>🎯</span> <span>TUJUAN BELAJAR</span>
+                                </button>
+                                <button onclick="openInfoModal('cp')" class="retro-btn bg-gradient-to-b from-teal-400 to-teal-600 hover:from-teal-300 hover:to-teal-500 text-black pixel-font text-[8px] sm:text-[9px] py-2.5 px-2 rounded-xl font-bold flex items-center justify-center gap-1">
+                                    <span>📜</span> <span>CAPAIAN BELAJAR</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pilihan Cepat 5 Level / World (Bisa Diklik Langsung untuk Mulai Level Tertentu) -->
+                <div class="mt-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="pixel-font text-[9px] sm:text-[10px] text-yellow-300 flex items-center gap-1.5">
+                            🗺️ PILIH LANGSUNG 5 WORLD / LEVEL PETUALANGAN:
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                        <button onclick="startGame(0)" class="group bg-slate-800 hover:bg-indigo-950 border-2 border-emerald-400/70 hover:border-yellow-400 p-2.5 rounded-xl text-left transition transform hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <span class="pixel-font text-[8px] sm:text-[9px] text-emerald-400 group-hover:text-yellow-300">WORLD 1-1</span>
+                                <span class="text-xs">🌱</span>
+                            </div>
+                            <div class="text-xs font-bold text-white mt-1 leading-tight">Komponen Ekosistem</div>
+                        </button>
+                        <button onclick="startGame(1)" class="group bg-slate-800 hover:bg-indigo-950 border-2 border-amber-400/70 hover:border-yellow-400 p-2.5 rounded-xl text-left transition transform hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <span class="pixel-font text-[8px] sm:text-[9px] text-amber-400 group-hover:text-yellow-300">WORLD 1-2</span>
+                                <span class="text-xs">🌾</span>
+                            </div>
+                            <div class="text-xs font-bold text-white mt-1 leading-tight">Rantai Makanan</div>
+                        </button>
+                        <button onclick="startGame(2)" class="group bg-slate-800 hover:bg-indigo-950 border-2 border-sky-400/70 hover:border-yellow-400 p-2.5 rounded-xl text-left transition transform hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <span class="pixel-font text-[8px] sm:text-[9px] text-sky-400 group-hover:text-yellow-300">WORLD 1-3</span>
+                                <span class="text-xs">🕸️</span>
+                            </div>
+                            <div class="text-xs font-bold text-white mt-1 leading-tight">Jaring Makanan</div>
+                        </button>
+                        <button onclick="startGame(3)" class="group bg-slate-800 hover:bg-indigo-950 border-2 border-purple-400/70 hover:border-yellow-400 p-2.5 rounded-xl text-left transition transform hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <span class="pixel-font text-[8px] sm:text-[9px] text-purple-400 group-hover:text-yellow-300">WORLD 1-4</span>
+                                <span class="text-xs">🦋</span>
+                            </div>
+                            <div class="text-xs font-bold text-white mt-1 leading-tight">Simbiosis</div>
+                        </button>
+                        <button onclick="startGame(4)" class="group bg-slate-800 hover:bg-indigo-950 border-2 border-rose-400/70 hover:border-yellow-400 p-2.5 rounded-xl text-left transition transform hover:-translate-y-0.5 col-span-2 sm:col-span-1">
+                            <div class="flex justify-between items-center">
+                                <span class="pixel-font text-[8px] sm:text-[9px] text-rose-400 group-hover:text-yellow-300">WORLD 1-5</span>
+                                <span class="text-xs">🌍</span>
+                            </div>
+                            <div class="text-xs font-bold text-white mt-1 leading-tight">Keseimbangan Alam</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Aksen Pipa & Bata Mario -->
+            <div class="bg-[#00a800] border-t-4 border-black px-4 py-2 flex flex-wrap justify-between items-center gap-2 text-[10px] sm:text-xs text-white font-semibold">
+                <span>🍄 Sundul Blok [A/B/C/D] untuk Menjawab Kuis!</span>
+                <span class="pixel-font text-[8px] text-yellow-200">⏸️ PAUSE & 🏠 MENU TERSEDIA SAAT BERMAIN</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BARU: PETUNJUK CARA BERMAIN, TUJUAN PEMBELAJARAN (TP), & CAPAIAN PEMBELAJARAN (CP) -->
+    <div id="infoModal" class="fixed inset-0 z-50 bg-black/85 hidden items-center justify-center p-4">
+        <div class="retro-box max-w-2xl w-full max-h-[88vh] rounded-2xl flex flex-col overflow-hidden text-white">
+            <div id="infoModalHeader" class="bg-sky-500 border-b-4 border-black px-5 py-3 flex justify-between items-center">
+                <h2 id="infoModalTitle" class="pixel-font text-xs sm:text-sm text-black">🎮 PETUNJUK CARA BERMAIN</h2>
+                <button onclick="closeInfoModal()" class="retro-btn bg-red-600 text-white pixel-font text-xs px-3 py-1 rounded">X</button>
+            </div>
+
+            <!-- Tab Navigasi Cepat di dalam Modal -->
+            <div class="bg-slate-900 px-4 pt-3 pb-2 border-b border-slate-700 flex flex-wrap gap-2">
+                <button onclick="openInfoModal('petunjuk')" id="tabBtnPetunjuk" class="pixel-font text-[9px] px-3 py-1.5 rounded border border-sky-400 bg-sky-500 text-black">
+                    🎮 Petunjuk Bermain
+                </button>
+                <button onclick="openInfoModal('tp')" id="tabBtnTp" class="pixel-font text-[9px] px-3 py-1.5 rounded border border-slate-600 bg-slate-800 text-slate-300">
+                    🎯 Tujuan Pembelajaran
+                </button>
+                <button onclick="openInfoModal('cp')" id="tabBtnCp" class="pixel-font text-[9px] px-3 py-1.5 rounded border border-slate-600 bg-slate-800 text-slate-300">
+                    📜 Capaian Pembelajaran
+                </button>
+            </div>
+
+            <!-- Isi Konten Dinamis -->
+            <div id="infoModalBody" class="p-5 overflow-y-auto space-y-4 text-sm sm:text-base leading-relaxed">
+                <!-- Diisi melalui JavaScript -->
+            </div>
+
+            <div class="p-4 bg-slate-900 border-t border-slate-700 text-right">
+                <button onclick="closeInfoModal()" class="retro-btn bg-emerald-500 text-black pixel-font text-xs px-5 py-2.5 rounded-lg">
+                    MENGERTI & TUTUP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BARU: LAYAR PAUSE (JEDA PERMAINAN) -->
+    <div id="pauseModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="retro-box max-w-sm w-full rounded-2xl p-6 text-center text-white">
+            <div class="text-4xl mb-2">⏸️</div>
+            <h2 class="pixel-font text-base sm:text-lg text-yellow-400 text-outline mb-2">
+                PERMAINAN DIJEDA
+            </h2>
+            <p class="text-slate-300 text-xs sm:text-sm mb-5">
+                Waktu dan permainan dihentikan sementara. Pilih aksi di bawah ini:
+            </p>
+            <div class="flex flex-col gap-3">
+                <button onclick="togglePauseGame()" class="retro-btn bg-emerald-500 hover:bg-emerald-400 text-black pixel-font text-xs py-3 rounded-xl font-bold">
+                    ▶ LANJUTKAN BERMAIN
+                </button>
+                <button onclick="replayCurrentLevel()" class="retro-btn bg-blue-500 hover:bg-blue-400 text-white pixel-font text-xs py-3 rounded-xl font-bold">
+                    🔄 ULANGI LEVEL INI
+                </button>
+                <button onclick="openMateriModal()" class="retro-btn bg-amber-400 hover:bg-amber-300 text-black pixel-font text-xs py-3 rounded-xl font-bold">
+                    📖 BUKA MATERI IPAS
+                </button>
+                <button onclick="returnToMainMenu()" class="retro-btn bg-rose-600 hover:bg-rose-500 text-white pixel-font text-xs py-3 rounded-xl font-bold">
+                    🏠 KEMBALI KE MENU AWAL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: MATERI IPAS KELAS 5 SD -->
+    <div id="materiModal" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4">
+        <div class="retro-box max-w-3xl w-full max-h-[88vh] rounded-2xl flex flex-col overflow-hidden text-white">
+            <div class="bg-amber-500 border-b-4 border-black px-5 py-3 flex justify-between items-center">
+                <h2 class="pixel-font text-xs sm:text-sm text-black">📖 RANGKUMAN MATERI IPAS KELAS 5 SD</h2>
+                <button onclick="closeMateriModal()" class="retro-btn bg-red-600 text-white pixel-font text-xs px-3 py-1 rounded">X</button>
+            </div>
+            <div class="p-5 overflow-y-auto space-y-4 text-sm sm:text-base leading-relaxed">
+                <div class="bg-slate-800/80 border border-emerald-400/50 p-4 rounded-xl">
+                    <h3 class="pixel-font text-xs text-emerald-400 mb-2">1. EKOSISTEM (KOMPONEN BIOTIK & ABIOTIK)</h3>
+                    <p class="text-slate-200"><b>Ekosistem</b> adalah hubungan timbal balik antara makhluk hidup dengan lingkungannya. Terdiri dari:</p>
+                    <ul class="list-disc list-inside mt-1 text-slate-300 space-y-1">
+                        <li><b>Komponen Biotik (Hidup):</b> Manusia, hewan, tumbuhan, jamur, bakteri.</li>
+                        <li><b>Komponen Abiotik (Tak Hidup):</b> Cahaya matahari, air, udara, tanah, suhu, batu.</li>
+                        <li><b>Urutan Satuan:</b> Individu (1 makhluk) → Populasi (kumpulan sejenis) → Komunitas → Ekosistem → Bioma.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/80 border border-yellow-400/50 p-4 rounded-xl">
+                    <h3 class="pixel-font text-xs text-yellow-400 mb-2">2. RANTAI MAKANAN & JARING-JARING MAKANAN</h3>
+                    <p class="text-slate-200"><b>Rantai Makanan</b> adalah perjalanan memakan dan dimakan dengan urutan tertentu:</p>
+                    <ul class="list-disc list-inside mt-1 text-slate-300 space-y-1">
+                        <li><b>Produsen:</b> Penghasil makanan sendiri lewat fotosintesis (Padi, rumput, fitoplankton).</li>
+                        <li><b>Konsumen I (Herbivora/Omnivora):</b> Pemakan tumbuhan (Belalang, tikus, ulat, kelinci, zooplankton).</li>
+                        <li><b>Konsumen II (Karnivora):</b> Pemakan Konsumen I (Katak, burung pipit, ayam).</li>
+                        <li><b>Konsumen III / Puncak:</b> Pemangsa tertinggi (Ular, elang, harimau, hiu).</li>
+                        <li><b>Dekomposer (Pengurai):</b> Jamur & bakteri yang menguraikan bangkai menjadi humus/hara tanah.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800/80 border border-blue-400/50 p-4 rounded-xl">
+                    <h3 class="pixel-font text-xs text-blue-400 mb-2">3. SIMBIOSIS (HUBUNGAN DUA MAKHLUK HIDUP)</h3>
+                    <ul class="list-disc list-inside text-slate-300 space-y-1">
+                        <li><b>Mutualisme (Untung - Untung):</b> Kupu-kupu & bunga, kerbau & burung jalak, ikan badut & anemon laut, bakteri <i>E. coli</i> di usus manusia.</li>
+                        <li><b>Komensalisme (Untung - Tidak Untung/Rugi):</b> Ikan hiu & ikan remora, tanaman anggrek/paku tanduk rusa menempel di pohon mangga.</li>
+                        <li><b>Parasitisme (Untung - Rugi):</b> Benalu/tali putri di pohon inang, kutu di kepala, cacing pita di perut, nyamuk & manusia.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-900 border-t border-slate-700 text-right">
+                <button onclick="closeMateriModal()" class="retro-btn bg-emerald-500 text-black pixel-font text-xs px-5 py-2.5 rounded-lg">
+                    SIAP BERMAIN!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: PILIH LEVEL (WORLD SELECT) -->
+    <div id="levelSelectModal" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4">
+        <div class="retro-box max-w-lg w-full rounded-2xl p-5 text-white">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="pixel-font text-xs sm:text-sm text-yellow-400">🗺️ PILIH WORLD / LEVEL</h2>
+                <button onclick="closeLevelSelectModal()" class="retro-btn bg-red-600 text-white pixel-font text-xs px-3 py-1 rounded">X</button>
+            </div>
+            <div id="levelSelectList" class="space-y-2.5 max-h-[65vh] overflow-y-auto pr-1">
+                <!-- Diisi oleh JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: LEVEL SELESAI / GAME OVER -->
+    <div id="resultModal" class="fixed inset-0 z-50 bg-black/85 hidden items-center justify-center p-4">
+        <div class="retro-box max-w-md w-full rounded-2xl p-6 text-center text-white">
+            <div id="resultIcon" class="text-5xl mb-3">🏆</div>
+            <h2 id="resultTitle" class="pixel-font text-base sm:text-xl text-yellow-400 text-outline mb-2">
+                WORLD 1-1 SELESAI!
+            </h2>
+            <p id="resultDesc" class="text-slate-200 text-sm sm:text-base mb-4">
+                Hebat! Kamu berhasil menjawab soal-soal di level ini.
+            </p>
+            <div class="bg-slate-800 border border-slate-600 rounded-xl p-3 mb-5 grid grid-cols-2 gap-2 text-center">
+                <div>
+                    <div class="text-xs text-slate-400">JAWABAN BENAR</div>
+                    <div id="resultCorrect" class="pixel-font text-sm sm:text-base text-emerald-400 mt-1">10/10</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400">TOTAL SKOR</div>
+                    <div id="resultScore" class="pixel-font text-sm sm:text-base text-yellow-300 mt-1">002500</div>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2.5 justify-center">
+                <button onclick="returnToMainMenu()" class="retro-btn bg-rose-600 hover:bg-rose-500 text-white pixel-font text-xs px-4 py-3 rounded-xl">
+                    🏠 MENU AWAL
+                </button>
+                <button id="btnReplayLevel" onclick="replayCurrentLevel()" class="retro-btn bg-slate-700 hover:bg-slate-600 text-white pixel-font text-xs px-4 py-3 rounded-xl">
+                    🔄 ULANGI LEVEL
+                </button>
+                <button id="btnNextLevel" onclick="goNextLevel()" class="retro-btn bg-emerald-500 hover:bg-emerald-400 text-black pixel-font text-xs px-5 py-3 rounded-xl font-bold">
+                    LANJUT LEVEL BERIKUTNYA ▶
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* ============================================================================
+   1. BANK SOAL IPAS KELAS 5 SD (5 LEVEL x 10 SOAL = 50 SOAL)
+   Topik: Ekosistem, Rantai Makanan, Jaring Makanan, Simbiosis, Keseimbangan Alam
+   ============================================================================ */
+const LEVELS_DATA = [
+    {
+        world: "1-1",
+        title: "Komponen Ekosistem",
+        skyColor: "#5c94fc",
+        groundColor: "#c84c0c",
+        hillColor: "#00a800",
+        questions: [
+            { q: "Hubungan timbal balik antara makhluk hidup dan lingkungannya disebut...", opts: ["Populasi", "Ekosistem", "Komunitas", "Habitat"], ans: 1, exp: "Ekosistem adalah interaksi makhluk hidup (biotik) dan lingkungan tak hidup (abiotik)." },
+            { q: "Berikut ini yang termasuk komponen biotik (hidup) di dalam ekosistem sawah adalah...", opts: ["Lumpur dan air", "Cahaya matahari", "Padi dan katak", "Udara dan batu"], ans: 2, exp: "Padi dan katak adalah makhluk hidup (komponen biotik)." },
+            { q: "Di bawah ini yang merupakan komponen abiotik (tak hidup) adalah...", opts: ["Cacing tanah", "Rumput liar", "Sinar matahari", "Bakteri pengurai"], ans: 2, exp: "Sinar matahari adalah benda tak hidup (abiotik) yang penting untuk fotosintesis." },
+            { q: "Kumpulan makhluk hidup sejenis yang menempati suatu tempat tertentu disebut...", opts: ["Individu", "Populasi", "Ekosistem", "Biosfer"], ans: 1, exp: "Contoh populasi adalah sekumpulan tanaman padi di sawah atau sekelompok bebek." },
+            { q: "Seekor kucing tunggal yang sedang duduk di halaman rumah disebut sebagai...", opts: ["Individu", "Populasi", "Komunitas", "Ekosistem"], ans: 0, exp: "Individu adalah makhluk hidup tunggal (satu ekor/satu batang)." },
+            { q: "Tempat tinggal alami suatu makhluk hidup untuk tumbuh dan berkembang biak disebut...", opts: ["Komunitas", "Niche", "Habitat", "Adaptasi"], ans: 2, exp: "Habitat adalah rumah alami makhluk hidup, misalnya ikan di air." },
+            { q: "Contoh ekosistem buatan yang sengaja dibuat oleh manusia adalah...", opts: ["Laut dalam", "Hutan hujan tropis", "Waduk dan sawah", "Sungai alami"], ans: 2, exp: "Waduk, sawah, dan akuarium adalah contoh ekosistem buatan manusia." },
+            { q: "Sumber energi utama bagi seluruh kehidupan di permukaan Bumi adalah...", opts: ["Angin kencang", "Batu bara", "Air sungai", "Matahari"], ans: 3, exp: "Cahaya matahari membantu tumbuhan berfotosintesis menghasilkan energi." },
+            { q: "Hewan yang makanannya hanya berupa tumbuhan seperti sapi dan kambing disebut...", opts: ["Karnivora", "Herbivora", "Omnivora", "Insektivora"], ans: 1, exp: "Herbivora adalah kelompok hewan pemakan tumbuhan." },
+            { q: "Jamur dan bakteri dalam ekosistem berperan sangat penting sebagai...", opts: ["Produsen utama", "Konsumen tingkat I", "Pengurai (Dekomposer)", "Predator puncak"], ans: 2, exp: "Dekomposer menguraikan sisa makhluk hidup yang mati menjadi zat hara tanah." }
+        ]
+    },
+    {
+        world: "1-2",
+        title: "Rantai Makanan",
+        skyColor: "#4f86f7",
+        groundColor: "#b8440a",
+        hillColor: "#15803d",
+        questions: [
+            { q: "Makhluk hidup yang mampu membuat makanannya sendiri melalui fotosintesis disebut...", opts: ["Konsumen I", "Produsen", "Dekomposer", "Predator"], ans: 1, exp: "Tumbuhan hijau adalah produsen karena dapat berfotosintesis." },
+            { q: "Pada rantai makanan: Padi -> Tikus -> Ular -> Elang, yang berperan sebagai Konsumen I adalah...", opts: ["Padi", "Tikus", "Ular", "Elang"], ans: 1, exp: "Tikus memakan produsen (padi) secara langsung sehingga disebut Konsumen I." },
+            { q: "Pada rantai makanan: Rumput -> Belalang -> Katak -> Ular, peran Katak adalah...", opts: ["Produsen", "Konsumen I", "Konsumen II", "Pengurai"], ans: 2, exp: "Belalang adalah Konsumen I, sehingga Katak yang memakan belalang adalah Konsumen II." },
+            { q: "Di ekosistem laut, yang berperan sebagai produsen utama penghasil oksigen & makanan adalah...", opts: ["Zooplankton", "Ikan kecil", "Fitoplankton", "Terumbu karang"], ans: 2, exp: "Fitoplankton adalah tumbuhan mikroskopis di laut yang berfotosintesis." },
+            { q: "Konsumen puncak pada rantai makanan di ekosistem padang rumput (savana) adalah...", opts: ["Zebra", "Rusa", "Singa", "Belalang"], ans: 2, exp: "Singa adalah predator puncak yang tidak memiliki pemangsa alami lagi." },
+            { q: "Apa fungsi utama pengurai (jamur & bakteri) di ujung rantai makanan?", opts: ["Memangsa herbivora", "Menyuburkan tanah dengan zat hara", "Menghasilkan cahaya", "Menghabiskan oksigen"], ans: 1, exp: "Pengurai mengubah bangkai menjadi humus/zat hara yang menyuburkan tumbuhan." },
+            { q: "Urutan rantai makanan di ekosistem kebun yang paling tepat adalah...", opts: ["Daun -> Ulat -> Burung Kutilang -> Ular", "Ulat -> Daun -> Ular -> Burung", "Burung -> Ulat -> Daun -> Ular", "Daun -> Ular -> Ulat -> Burung"], ans: 0, exp: "Dimulai dari produsen (Daun) dimakan Ulat (K-1), Burung (K-2), lalu Ular (K-3)." },
+            { q: "Hewan pemakan daging atau pemangsa hewan lain pada rantai makanan disebut...", opts: ["Herbivora", "Karnivora", "Produsen", "Autotrof"], ans: 1, exp: "Karnivora adalah hewan pemakan daging (seperti harimau, ular, elang)." },
+            { q: "Ayam dan beruang memakan tumbuhan sekaligus hewan kecil, sehingga dikelompokkan sebagai...", opts: ["Herbivora", "Karnivora", "Omnivora", "Dekomposer"], ans: 2, exp: "Omnivora adalah makhluk hidup pemakan segala (tumbuhan dan daging)." },
+            { q: "Pada rantai makanan: Fitoplankton -> Zooplankton -> Ikan Kecil -> Ikan Hiu, peran Zooplankton adalah...", opts: ["Produsen", "Konsumen I", "Konsumen II", "Konsumen Puncak"], ans: 1, exp: "Zooplankton memakan fitoplankton (produsen), sehingga menjadi Konsumen I." }
+        ]
+    },
+    {
+        world: "1-3",
+        title: "Jaring-Jaring & Piramida Makanan",
+        skyColor: "#3868c8",
+        groundColor: "#9a3412",
+        hillColor: "#166534",
+        questions: [
+            { q: "Gabungan dari beberapa rantai makanan yang saling berhubungan di suatu ekosistem disebut...", opts: ["Piramida makanan", "Jaring-jaring makanan", "Siklus air", "Simbiosis"], ans: 1, exp: "Jaring-jaring makanan terdiri dari banyak rantai makanan yang saling terkait." },
+            { q: "Pada piramida makanan yang seimbang, bagian paling bawah (dasar) yang jumlahnya paling banyak adalah...", opts: ["Konsumen Puncak", "Konsumen II", "Konsumen I", "Produsen"], ans: 3, exp: "Produsen (tumbuhan) harus paling banyak agar mampu mencukupi makanan konsumen." },
+            { q: "Semakin ke puncak piramida makanan, maka jumlah populasi dan energi makhluk hidup akan...", opts: ["Semakin banyak", "Semakin sedikit", "Tetap sama", "Tidak berubah"], ans: 1, exp: "Jumlah konsumen puncak paling sedikit dibanding produsen dan herbivora." },
+            { q: "Jika populasi ular di sawah habis diburu manusia, maka populasi tikus akan...", opts: ["Ikut punah", "Meningkat pesat (meledak)", "Menurun drastis", "Tetap stabil"], ans: 1, exp: "Karena tidak ada ular yang memangsa tikus, jumlah tikus akan bertambah banyak." },
+            { q: "Jika populasi tikus di sawah meningkat pesat, dampak langsung bagi petani adalah...", opts: ["Panen padi melimpah", "Hasil panen padi menurun/gagal", "Belalang punah", "Air sawah mengering"], ans: 1, exp: "Tikus memakan tanaman padi sehingga merugikan hasil panen petani." },
+            { q: "Dalam jaring-jaring makanan, satu jenis tumbuhan seperti padi dapat dimakan oleh...", opts: ["Hanya satu hewan saja", "Tikus, belalang, dan burung pipit", "Ular dan elang", "Katak dan laba-laba"], ans: 1, exp: "Dalam jaring-jaring makanan, padi menjadi makanan bagi berbagai herbivora/omnivora." },
+            { q: "Aliran energi di dalam sebuah rantai makanan selalu dimulai dari...", opts: ["Konsumen puncak", "Tumbuhan hijau (Produsen)", "Hewan karnivora", "Bakteri tanah"], ans: 1, exp: "Produsen menangkap energi matahari dan mengalirkannya ke konsumen." },
+            { q: "Apabila seluruh tumbuhan (produsen) di suatu ekosistem mati karena kekeringan, maka...", opts: ["Herbivora akan kelaparan dan ikut mati", "Karnivora semakin gemuk", "Ekosistem makin subur", "Tidak terjadi apa-apa"], ans: 0, exp: "Tanpa produsen, konsumen I kehilangan sumber makanan, diikuti konsumen lainnya." },
+            { q: "Burung elang dapat memangsa ular, tikus, maupun kelinci. Dalam jaring makanan, elang menduduki posisi...", opts: ["Produsen utama", "Konsumen tingkat I", "Konsumen puncak", "Pengurai"], ans: 2, exp: "Elang adalah predator puncak di ekosistem darat." },
+            { q: "Jika populasi katak di sawah menurun drastis, maka populasi belalang akan...", opts: ["Menurun drastis", "Meningkat karena pemangsanya berkurang", "Langsung punah", "Berubah menjadi katak"], ans: 1, exp: "Katak adalah pemangsa belalang. Jika katak berkurang, belalang bertambah." }
+        ]
+    },
+    {
+        world: "1-4",
+        title: "Simbiosis Makhluk Hidup",
+        skyColor: "#6366f1",
+        groundColor: "#991b1b",
+        hillColor: "#047857",
+        questions: [
+            { q: "Hubungan erat yang khas antara dua makhluk hidup yang berbeda jenis disebut...", opts: ["Metamorfosis", "Simbiosis", "Fotosintesis", "Adaptasi"], ans: 1, exp: "Simbiosis terdiri dari mutualisme, komensalisme, dan parasitisme." },
+            { q: "Simbiosis yang saling menguntungkan kedua belah pihak makhluk hidup disebut simbiosis...", opts: ["Parasitisme", "Komensalisme", "Mutualisme", "Kompetisi"], ans: 2, exp: "Mutualisme memberikan keuntungan bagi kedua makhluk hidup yang berinteraksi." },
+            { q: "Hubungan antara kupu-kupu atau lebah dengan bunga yang sedang mekar adalah contoh simbiosis...", opts: ["Mutualisme", "Parasitisme", "Komensalisme", "Predasi"], ans: 0, exp: "Lebah mendapat nektar, sedangkan bunga terbantu proses penyerbukannya." },
+            { q: "Burung jalak yang memakan kutu di punggung kerbau termasuk contoh simbiosis...", opts: ["Parasitisme", "Komensalisme", "Mutualisme", "Netralisme"], ans: 2, exp: "Burung jalak kenyang makan kutu, dan tubuh kerbau bebas dari rasa gatal." },
+            { q: "Hubungan dua makhluk hidup di mana satu pihak untung dan pihak lain TIDAK untung maupun rugi disebut...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Predasi"], ans: 1, exp: "Pada komensalisme, inang tidak dirugikan dan tidak diuntungkan." },
+            { q: "Tanaman anggrek yang menempel pada batang pohon mangga merupakan contoh simbiosis...", opts: ["Parasitisme", "Mutualisme", "Komensalisme", "Kompetisi"], ans: 2, exp: "Anggrek mendapat tempat tinggi untuk cahaya, tanpa menyerap makanan pohon mangga." },
+            { q: "Ikan remora yang berenang menempel di dekat tubuh ikan hiu termasuk simbiosis...", opts: ["Komensalisme", "Parasitisme", "Mutualisme", "Kanibalisme"], ans: 0, exp: "Ikan remora mendapat sisa makanan & perlindungan, sedangkan hiu tidak terganggu." },
+            { q: "Hubungan yang menguntungkan satu pihak tetapi MERUGIKAN pihak lainnya disebut simbiosis...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Harmonis"], ans: 2, exp: "Parasit mengambil keuntungan dan membuat inangnya sakit atau rugi." },
+            { q: "Tanaman benalu atau tali putri yang hidup menempel pada pohon inang termasuk simbiosis...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Netralisme"], ans: 2, exp: "Benalu menyerap air dan sari makanan dari pohon inangnya hingga pohon kurus." },
+            { q: "Hubungan antara ikan badut (Nemo) dengan anemon laut merupakan contoh simbiosis...", opts: ["Parasitisme", "Mutualisme", "Komensalisme", "Predasi"], ans: 1, exp: "Ikan badut terlindung dari pemangsa, dan anemon laut dibersihkan dari parasit." }
+        ]
+    },
+    {
+        world: "1-5",
+        title: "Keseimbangan Alam & Pelestarian",
+        skyColor: "#1e293b",
+        groundColor: "#7c2d12",
+        hillColor: "#065f46",
+        questions: [
+            { q: "Kegiatan manusia yang dapat merusak keseimbangan ekosistem hutan secara langsung adalah...", opts: ["Reboisasi hutan", "Penebangan liar (Illegal logging)", "Tebang pilih tanam", "Membuat cagar alam"], ans: 1, exp: "Penebangan liar menghilangkan rumah dan sumber makanan hewan hutan." },
+            { q: "Penggunaan pupuk kimia dan pestisida secara berlebihan di sawah dapat mengakibatkan...", opts: ["Air sungai makin jernih", "Musnahnya hewan berguna & pencemaran", "Ikan di sungai bertambah", "Tanah makin gembur alami"], ans: 1, exp: "Pestisida berlebih membunuh organisme baik dan mencemari tanah serta air." },
+            { q: "Upaya penanaman kembali hutan yang telah gundul agar ekosistem pulih disebut...", opts: ["Erosi", "Reboisasi", "Urbanisasi", "Irigasi"], ans: 1, exp: "Reboisasi adalah penghijauan kembali hutan yang gundul." },
+            { q: "Menangkap ikan di laut menggunakan bahan peledak atau pukat harimau dilarang karena...", opts: ["Membuat air laut asin", "Merusak terumbu karang dan benih ikan kecil", "Membuat kapal cepat rusak", "Menghemat bahan bakar"], ans: 1, exp: "Bahan peledak menghancurkan terumbu karang yang menjadi habitat ikan." },
+            { q: "Bencana alam yang dapat mengganggu keseimbangan ekosistem di sekitar gunung adalah...", opts: ["Gunung meletus", "Pelangi sore hari", "Gerhana bulan", "Pasang surut air laut"], ans: 0, exp: "Abu vulkanik dan lahar gunung meletus dapat merusak vegetasi hutan di sekitarnya." },
+            { q: "Mengapa harimau atau macan kadang turun ke perkampungan warga di pinggir hutan?", opts: ["Ingin bermain dengan warga", "Habitat dan hewan mangsanya di hutan rusak", "Takut dengan pohon tinggi", "Suka udara keramaian"], ans: 1, exp: "Ketika hutan rusak dan mangsa habis, predator mencari makan ke pemukiman." },
+            { q: "Cara mengendalikan hama tikus di sawah yang ramah lingkungan tanpa racun kimia adalah...", opts: ["Membakar seluruh sawah", "Memanfaatkan burung hantu (Tyto alba)", "Menabur plastik di sawah", "Mengeringkan sungai"], ans: 1, exp: "Burung hantu adalah predator alami tikus yang sangat efektif membantu petani." },
+            { q: "Kutu yang hidup menghisap darah di kulit kepala manusia merupakan contoh simbiosis...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Kompetisi"], ans: 2, exp: "Kutu untung mendapat darah, manusia rugi karena gatal dan luka." },
+            { q: "Persaingan antara dua ekor singa jantan memperebutkan mangsa di padang rumput disebut...", opts: ["Simbiosis mutualisme", "Kompetisi", "Komensalisme", "Dekomposisi"], ans: 1, exp: "Kompetisi adalah persaingan antar makhluk hidup memperebutkan makanan/wilayah." },
+            { q: "Sikap siswa kelas 5 SD yang baik untuk menjaga kelestarian ekosistem di sekitar sekolah adalah...", opts: ["Membuang sampah plastik ke selokan", "Merawat tanaman & membuang sampah pada tempatnya", "Menangkap semua burung di pohon", "Memetik semua bunga taman"], ans: 1, exp: "Menjaga kebersihan dan merawat tanaman membantu keseimbangan ekosistem lingkungan." }
+        ]
+    }
+];
+
+/* ============================================================================
+   2. SYNTHESIZER AUDIO 8-BIT SUPER MARIO (Web Audio API - Tanpa File Eksternal)
+   ============================================================================ */
+let audioCtx = null;
+let bgmEnabled = true;
+let sfxEnabled = true;
+let bgmTimer = null;
+let bgmNoteIdx = 0;
+
+// Melodi Ikonik Bergaya Super Mario Bros Overworld
+const MARIO_MELODY = [
+    { f: 659.25, d: 0.13 }, { f: 659.25, d: 0.13 }, { f: 0, d: 0.13 }, { f: 659.25, d: 0.13 },
+    { f: 0, d: 0.13 }, { f: 523.25, d: 0.13 }, { f: 659.25, d: 0.26 }, { f: 783.99, d: 0.26 },
+    { f: 0, d: 0.26 }, { f: 392.00, d: 0.26 }, { f: 0, d: 0.26 },
+    // Bagian 2
+    { f: 523.25, d: 0.20 }, { f: 0, d: 0.10 }, { f: 392.00, d: 0.20 }, { f: 0, d: 0.10 },
+    { f: 329.63, d: 0.20 }, { f: 0, d: 0.10 }, { f: 440.00, d: 0.18 }, { f: 493.88, d: 0.18 },
+    { f: 466.16, d: 0.13 }, { f: 440.00, d: 0.24 }, { f: 392.00, d: 0.18 }, { f: 659.25, d: 0.18 },
+    { f: 783.99, d: 0.18 }, { f: 880.00, d: 0.22 }, { f: 698.46, d: 0.15 }, { f: 783.99, d: 0.15 },
+    { f: 0, d: 0.10 }, { f: 659.25, d: 0.20 }, { f: 523.25, d: 0.15 }, { f: 587.33, d: 0.15 },
+    { f: 493.88, d: 0.24 }, { f: 0, d: 0.20 }
+];
+
+function initAudio() {
+    if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+        }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function playTone(freq, duration, type = 'square', vol = 0.08, slideFreq = null) {
+    if (!audioCtx) return;
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        if (slideFreq) {
+            osc.frequency.linearRampToValueAtTime(slideFreq, audioCtx.currentTime + duration);
+        }
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+}
+
+function startBGM() {
+    initAudio();
+    stopBGM();
+    if (!bgmEnabled) return;
+    function stepNote() {
+        if (!bgmEnabled) return;
+        const note = MARIO_MELODY[bgmNoteIdx];
+        bgmNoteIdx = (bgmNoteIdx + 1) % MARIO_MELODY.length;
+        if (note.f > 0 && audioCtx && audioCtx.state === 'running') {
+            playTone(note.f, note.d * 0.85, 'square', 0.04);
+            // Bass pendamping halus
+            playTone(note.f / 2, note.d * 0.7, 'triangle', 0.03);
+        }
+        bgmTimer = setTimeout(stepNote, note.d * 1000);
+    }
+    stepNote();
+}
+
+function stopBGM() {
+    if (bgmTimer) {
+        clearTimeout(bgmTimer);
+        bgmTimer = null;
+    }
+}
+
+function toggleBGM() {
+    initAudio();
+    bgmEnabled = !bgmEnabled;
+    const btn = document.getElementById('btnBgm');
+    btn.innerHTML = `<span class="w-2 h-2 rounded-full ${bgmEnabled ? 'bg-green-400' : 'bg-red-500'}"></span> BGM`;
+    if (bgmEnabled) startBGM();
+    else stopBGM();
+}
+
+function toggleSFX() {
+    initAudio();
+    sfxEnabled = !sfxEnabled;
+    const btn = document.getElementById('btnSfx');
+    btn.innerHTML = `<span class="w-2 h-2 rounded-full ${sfxEnabled ? 'bg-green-400' : 'bg-red-500'}"></span> SFX`;
+}
+
+// Fitur Kecilkan/Besarkan Panel Soal agar tidak menutupi layar pada HP kecil atau mode Landscape pendek
+let questionMinimized = false;
+function toggleMinimizeQuestion() {
+    questionMinimized = !questionMinimized;
+    const body = document.getElementById('qCollapsibleBody');
+    const btn = document.getElementById('btnMinQuestion');
+    if (questionMinimized) {
+        body.classList.add('hidden');
+        btn.textContent = '▼ TAMPILKAN SOAL';
+    } else {
+        body.classList.remove('hidden');
+        btn.textContent = '▲ KECILKAN';
+    }
+}
+
+// Fitur Ubah Posisi Soal Pertanyaan (Atas / Bawah / Kiri / Kanan) sesuai kenyamanan layar HP, Tablet, Laptop & Papan Layar Interaktif Digital
+let questionPositionMode = 0; // 0: Atas Tengah (diturunkan agar menu terlihat), 1: Bawah Tengah (di atas konsol), 2: Kiri Atas, 3: Kanan Atas
+function cycleQuestionPosition() {
+    questionPositionMode = (questionPositionMode + 1) % 4;
+    const qHud = document.getElementById('questionHUD');
+    if (!qHud) return;
+
+    if (questionPositionMode === 0) {
+        qHud.className = "q-pos-top fixed top-32 sm:top-36 left-1/2 -translate-x-1/2 z-20 w-[96%] max-w-3xl pointer-events-auto transition-all duration-200";
+        showToast("Posisi Soal: Atas Tengah (Semua Menu Atas Terlihat Jelas)");
+    } else if (questionPositionMode === 1) {
+        qHud.className = "q-pos-bottom fixed bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-20 w-[96%] max-w-3xl pointer-events-auto transition-all duration-200";
+        showToast("Posisi Soal: Bawah (Mudah dibaca dekat Konsol & Papan Interaktif)");
+    } else if (questionPositionMode === 2) {
+        qHud.className = "q-pos-left fixed top-32 sm:top-36 left-2 sm:left-4 translate-x-0 z-20 w-[92%] sm:w-[65%] max-w-xl pointer-events-auto transition-all duration-200";
+        showToast("Posisi Soal: Sisi Kiri Layar");
+    } else if (questionPositionMode === 3) {
+        qHud.className = "q-pos-right fixed top-32 sm:top-36 right-14 sm:right-16 left-auto translate-x-0 z-20 w-[86%] sm:w-[65%] max-w-xl pointer-events-auto transition-all duration-200";
+        showToast("Posisi Soal: Sisi Kanan Layar");
+    }
+}
+
+// Fitur Ubah Posisi Konsol Arah (Sangat membantu di Papan Layar Interaktif Digital, Tablet, Laptop dan HP Portrait/Landscape)
+let controlLayoutMode = 0; // 0: Standar (Kiri-Kanan), 1: Tengah Bawah, 2: Kiri Bawah, 3: Kanan Bawah, 4: Tengah Samping (Ergonomis Tablet/Smartboard)
+function cycleControlLayout() {
+    controlLayoutMode = (controlLayoutMode + 1) % 5;
+    const bar = document.getElementById('touchControlsBar');
+    const hint = document.getElementById('bottomHintBox');
+
+    if (controlLayoutMode === 0) {
+        bar.className = "fixed bottom-3 sm:bottom-4 left-0 w-full z-30 px-3 sm:px-6 xl:px-10 flex justify-between items-end pointer-events-none transition-all duration-200";
+        if (hint) hint.className = "hidden md:flex items-center gap-2 bg-slate-950/85 border-2 border-white/60 px-3 py-1.5 rounded-xl text-center pointer-events-auto shadow-xl";
+        showToast("Mode Konsol: Standar (Arah di Kiri, Lompat di Kanan)");
+    } else if (controlLayoutMode === 1) {
+        bar.className = "fixed bottom-3 sm:bottom-4 left-0 w-full z-30 px-3 sm:px-6 flex justify-center items-end gap-3 sm:gap-6 pointer-events-none transition-all duration-200";
+        if (hint) hint.className = "hidden";
+        showToast("Mode Konsol: Kumpul di Tengah Bawah (Nyaman untuk Papan Interaktif & HP Portrait)");
+    } else if (controlLayoutMode === 2) {
+        bar.className = "fixed bottom-3 sm:bottom-4 left-0 w-full z-30 px-3 sm:px-8 flex justify-start items-end gap-3 sm:gap-5 pointer-events-none transition-all duration-200";
+        if (hint) hint.className = "hidden";
+        showToast("Mode Konsol: Kumpul di Kiri Bawah (Satu Tangan Kiri)");
+    } else if (controlLayoutMode === 3) {
+        bar.className = "fixed bottom-3 sm:bottom-4 left-0 w-full z-30 px-3 sm:px-8 flex justify-end items-end gap-3 sm:gap-5 pointer-events-none transition-all duration-200";
+        if (hint) hint.className = "hidden";
+        showToast("Mode Konsol: Kumpul di Kanan Bawah (Satu Tangan Kanan)");
+    } else if (controlLayoutMode === 4) {
+        bar.className = "fixed bottom-28 sm:bottom-36 left-0 w-full z-30 px-3 sm:px-8 flex justify-between items-center pointer-events-none transition-all duration-200";
+        if (hint) hint.className = "hidden";
+        showToast("Mode Konsol: Posisi Tengah-Samping (Ergonomis untuk Tablet & Layar Lebar)");
+    }
+}
+
+// Fitur Fullscreen untuk Papan Layar Interaktif Digital, Tablet, dan HP
+function toggleFullscreenMode() {
+    try {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+            document.exitFullscreen().catch(() => {});
+        }
+    } catch (e) {}
+}
+
+function sfxJump() {
+    if (!sfxEnabled) return;
+    initAudio();
+    playTone(180, 0.22, 'square', 0.08, 560);
+}
+
+function sfxCoin() {
+    if (!sfxEnabled) return;
+    initAudio();
+    playTone(987.77, 0.08, 'square', 0.09);
+    setTimeout(() => playTone(1318.51, 0.28, 'square', 0.09), 80);
+}
+
+function sfxCorrect() {
+    if (!sfxEnabled) return;
+    initAudio();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((f, idx) => {
+        setTimeout(() => playTone(f, 0.12, 'square', 0.1), idx * 75);
+    });
+}
+
+function sfxWrong() {
+    if (!sfxEnabled) return;
+    initAudio();
+    playTone(220, 0.18, 'sawtooth', 0.1, 130);
+    setTimeout(() => playTone(150, 0.28, 'sawtooth', 0.1, 95), 170);
+}
+
+function sfxStomp() {
+    if (!sfxEnabled) return;
+    initAudio();
+    playTone(400, 0.12, 'triangle', 0.12, 120);
+}
+
+function sfxPowerUp() {
+    if (!sfxEnabled) return;
+    initAudio();
+    const notes = [330, 392, 659, 523, 587, 784];
+    notes.forEach((f, idx) => {
+        setTimeout(() => playTone(f, 0.09, 'square', 0.1), idx * 55);
+    });
+}
+
+function sfxLevelClear() {
+    if (!sfxEnabled) return;
+    initAudio();
+    const fanfare = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5];
+    fanfare.forEach((f, i) => {
+        setTimeout(() => playTone(f, 0.16, 'square', 0.1), i * 120);
+    });
+}
+
+/* ============================================================================
+   3. ENGINE GAME PLATFORMER & LOGIKA SUNDUL BLOK JAWABAN
+   ============================================================================ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let currentLevelIdx = 0;
+let score = 0;
+let coins = 0;
+let lives = 3;
+let timeLeft = 400;
+let timerInterval = null;
+let gameRunning = false;
+let gamePaused = false;
+
+// Kamera & Ukuran Dunia
+let cameraX = 0;
+const STATION_GAP = 680; // Jarak antar stasiun soal (10 soal per level)
+let worldWidth = 7800;
+
+// Objek Pemain (Mario)
+const player = {
+    x: 120,
+    y: 200,
+    w: 36,
+    h: 44,
+    vx: 0,
+    vy: 0,
+    speed: 4.8,
+    jumpForce: -15.2, // Lompatan lebih tinggi agar bisa naik ke atas kotak jawaban
+    onGround: false,
+    facing: 1,
+    invincibleTimer: 0,
+    walkFrame: 0
+};
+
+// Koleksi Entitas Level
+let stations = []; // 10 stasiun soal, masing-masing 4 blok (A, B, C, D)
+let pipes = [];
+let enemies = [];
+let floatingTexts = [];
+let particles = [];
+let clouds = [];
+let hills = [];
+let bushes = [];
+let flagPoleX = 7200;
+
+// Input Keyboard & Touch
+const keys = { left: false, right: false, jump: false };
+
+// Skala Kamera Dinamis untuk mendukung Portrait & Landscape di HP, Tablet, Laptop, dan Smartboard
+let viewScale = 1;
+function getLogicalWidth() {
+    return canvas.width / viewScale;
+}
+function getLogicalHeight() {
+    return canvas.height / viewScale;
+}
+
+function resizeCanvas() {
+    const oldGroundY = canvas.height ? getGroundY() : null;
+    canvas.width = window.innerWidth || 800;
+    canvas.height = window.innerHeight || 500;
+
+    // Hitung skala otomatis agar di HP Portrait (lebar sempit) seluruh 4 blok A,B,C,D tetap muat di layar,
+    // dan di Papan Interaktif Digital (resolusi besar) tampilan proporsional & tajam
+    const isPortrait = canvas.height > canvas.width;
+    if (isPortrait && canvas.width < 600) {
+        viewScale = Math.max(0.62, canvas.width / 520);
+    } else if (canvas.height < 480) {
+        // Mode HP Landscape pendek
+        viewScale = Math.max(0.68, canvas.height / 520);
+    } else if (canvas.width >= 1600) {
+        // Papan Layar Interaktif Digital / Smartboard
+        viewScale = Math.min(1.35, canvas.width / 1440);
+    } else {
+        viewScale = 1;
+    }
+
+    // Jaga agar posisi Mario tetap menapak tanah saat layar diputar (Portrait <-> Landscape)
+    const newGroundY = getGroundY();
+    if (oldGroundY !== null && player) {
+        const distFromGround = oldGroundY - (player.y + player.h);
+        if (distFromGround <= 5) {
+            player.y = newGroundY - player.h;
+        } else {
+            player.y = Math.min(newGroundY - player.h, Math.max(20, newGroundY - player.h - distFromGround));
+        }
+    }
+}
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 150));
+resizeCanvas();
+
+function getGroundY() {
+    const isPortrait = canvas.height > canvas.width;
+    // Beri ruang bawah yang cukup agar konsol tombol arah & lompat selalu terlihat jelas di atas/sekitar tanah baik Portrait maupun Landscape
+    const bottomOffset = isPortrait ? 125 : 96;
+    return getLogicalHeight() - bottomOffset;
+}
+
+// Bangun Dunia Level (10 Stasiun Soal + Pipa + Goomba + Dekorasi)
+function buildLevel(levelIdx) {
+    currentLevelIdx = levelIdx;
+    const levelData = LEVELS_DATA[levelIdx];
+    stations = [];
+    pipes = [];
+    enemies = [];
+    floatingTexts = [];
+    particles = [];
+    clouds = [];
+    hills = [];
+    bushes = [];
+
+    timeLeft = 400;
+    lives = 3;
+    updateHUD();
+
+    player.x = 110;
+    player.y = getGroundY() - player.h - 20;
+    player.vx = 0;
+    player.vy = 0;
+    player.invincibleTimer = 0;
+
+    // Buat 10 Stasiun Soal (Setiap stasiun memiliki 4 blok opsi A, B, C, D)
+    const optionColors = ['#ef4444', '#3b82f6', '#10b981', '#a855f7'];
+    const optionLetters = ['A', 'B', 'C', 'D'];
+
+    levelData.questions.forEach((qObj, idx) => {
+        const startX = 430 + idx * STATION_GAP;
+        const blocks = [];
+        for (let b = 0; b < 4; b++) {
+            blocks.push({
+                index: b,
+                letter: optionLetters[b],
+                color: optionColors[b],
+                x: startX + b * 74,
+                offsetY: 105, // Posisi ideal untuk disundul dari bawah & dilompati ke atasnya
+                w: 52,
+                h: 52,
+                bounceY: 0,
+                state: 'active', // 'active', 'correct', 'wrong', 'locked'
+                hasMushroom: false,
+                mushroomCollected: false,
+                mushroomRiseY: 0
+            });
+        }
+
+        stations.push({
+            qIndex: idx,
+            startX: startX,
+            centerX: startX + 135,
+            questionData: qObj,
+            blocks: blocks,
+            solved: false,
+            answeredCorrectly: null // true jika benar, false jika salah
+        });
+
+        // Tambahkan Pipa Hijau di antara stasiun soal
+        const pipeX = startX + 375;
+        pipes.push({
+            x: pipeX,
+            w: 56,
+            h: 72
+        });
+
+        // Tambahkan Musuh Goomba yang berpatroli di sekitar stasiun
+        enemies.push({
+            x: startX + 120,
+            w: 36,
+            h: 34,
+            vx: (idx % 2 === 0 ? 1.4 : -1.4),
+            minX: startX - 60,
+            maxX: pipeX - 42,
+            alive: true,
+            squishTimer: 0
+        });
+    });
+
+    flagPoleX = 430 + levelData.questions.length * STATION_GAP + 120;
+    worldWidth = flagPoleX + 500;
+
+    // Buat Awan, Bukit, dan Semak ala Super Mario
+    for (let x = 80; x < worldWidth; x += 340) {
+        clouds.push({ x: x + (Math.random() * 90), y: 70 + (Math.random() * 65), w: 96 });
+        hills.push({ x: x - 40, w: 170 + (x % 90), h: 75 + (x % 40) });
+        bushes.push({ x: x + 150, w: 84 });
+    }
+
+    showToast(`WORLD ${levelData.world}: ${levelData.title}! Sundul blok A/B/C/D untuk menjawab!`);
+    updateQuestionUI(0);
+}
+
+// Notifikasi Banner Atas (Mirip Gambar Referensi)
+function showToast(msg, borderColor = '#ffffff') {
+    const toastText = document.getElementById('toastText');
+    if (!toastText) return;
+    toastText.textContent = msg;
+    const box = toastText.parentElement;
+    if (box) box.style.borderColor = borderColor;
+}
+
+// Perbarui Panel Soal sesuai posisi Mario
+function getNearestStationIndex() {
+    let bestIdx = 0;
+    let minDist = Infinity;
+    stations.forEach((st, i) => {
+        const d = Math.abs((player.x + player.w / 2) - st.centerX);
+        if (d < minDist) {
+            minDist = d;
+            bestIdx = i;
+        }
+    });
+    return bestIdx;
+}
+
+let displayedStationIdx = -1;
+function updateQuestionUI(stationIdx, force = false) {
+    if (stationIdx === displayedStationIdx && !force) return;
+    displayedStationIdx = stationIdx;
+
+    const st = stations[stationIdx];
+    if (!st) return;
+
+    const q = st.questionData;
+    const levelData = LEVELS_DATA[currentLevelIdx];
+
+    document.getElementById('qBadge').textContent = `WORLD ${levelData.world} • SOAL #${stationIdx + 1}/10`;
+    const statusBadge = document.getElementById('qStatusBadge');
+    if (st.solved) {
+        if (st.answeredCorrectly) {
+            statusBadge.textContent = '✅ TERJAWAB BENAR! LANJUT KE SOAL BERIKUTNYA ▶';
+            statusBadge.className = 'pixel-font text-[8px] sm:text-[9px] text-yellow-300';
+        } else {
+            statusBadge.textContent = '❌ JAWABAN KURANG TEPAT! LANJUT KE SOAL BERIKUTNYA ▶';
+            statusBadge.className = 'pixel-font text-[8px] sm:text-[9px] text-rose-400';
+        }
+    } else {
+        statusBadge.textContent = '🎯 SUNDUL BLOK [A / B / C / D] DI BAWAH!';
+        statusBadge.className = 'pixel-font text-[8px] sm:text-[9px] text-emerald-300';
+    }
+
+    document.getElementById('qText').textContent = q.q;
+    for (let i = 0; i < 4; i++) {
+        document.getElementById(`optText${i}`).textContent = q.opts[i];
+        const box = document.getElementById(`optBox${i}`);
+        box.style.opacity = (st.blocks[i].state === 'wrong' || st.blocks[i].state === 'locked') ? '0.45' : '1';
+    }
+}
+
+// Logika Ketika Mario Menyundul Blok Jawaban dari Bawah
+function handleBlockHeadbutt(station, block) {
+    if (station.solved) {
+        sfxJump();
+        block.bounceY = -8;
+        return;
+    }
+
+    block.bounceY = -14;
+    const isCorrect = (block.index === station.questionData.ans);
+    const groundY = getGroundY();
+    const blockY = groundY - block.offsetY - block.h;
+
+    // Kunci stasiun soal ini setelah dijawab (baik benar maupun salah harus lanjut ke soal berikutnya)
+    station.solved = true;
+    station.answeredCorrectly = isCorrect;
+
+    if (isCorrect) {
+        block.state = 'correct';
+        block.hasMushroom = true;
+        block.mushroomCollected = false;
+        block.mushroomRiseY = 0; // Animasi jamur muncul dari dalam kotak
+        station.blocks.forEach(b => {
+            if (b !== block) b.state = 'locked';
+        });
+
+        score += 250;
+        coins += 5;
+        sfxCorrect();
+        setTimeout(() => sfxCoin(), 180);
+
+        // Munculkan partikel koin & teks skor
+        floatingTexts.push({
+            x: block.x + block.w / 2,
+            y: blockY - 10,
+            text: "BENAR! +250",
+            color: "#fde047",
+            life: 65
+        });
+
+        for (let p = 0; p < 12; p++) {
+            particles.push({
+                x: block.x + block.w / 2,
+                y: blockY,
+                vx: (Math.random() - 0.5) * 7,
+                vy: -Math.random() * 8 - 2,
+                color: ['#facc15', '#4ade80', '#ffffff'][p % 3],
+                life: 40
+            });
+        }
+
+        showToast(`Mantap! ${station.questionData.exp} Lompat ke atas blok & ambil Jamur Bonus (+150 Poin)!`, '#4ade80');
+    } else {
+        // Jawaban Salah -> Kunci soal ini, tunjukkan jawaban yang benar, dan minta pemain lanjut ke soal berikutnya
+        block.state = 'wrong';
+        station.blocks.forEach(b => {
+            if (b.index === station.questionData.ans) {
+                b.state = 'correct';
+            } else if (b !== block) {
+                b.state = 'locked';
+            }
+        });
+
+        score = Math.max(0, score - 50);
+        sfxWrong();
+
+        const correctLetter = ['A', 'B', 'C', 'D'][station.questionData.ans];
+        const correctText = station.questionData.opts[station.questionData.ans];
+
+        floatingTexts.push({
+            x: block.x + block.w / 2,
+            y: blockY - 10,
+            text: "SALAH! LANJUT ▶",
+            color: "#f87171",
+            life: 65
+        });
+
+        showToast(`Kurang tepat! Jawaban benar: ${correctLetter} (${correctText}). Silakan lanjut ke soal berikutnya!`, '#f87171');
+    }
+
+    updateHUD();
+    updateQuestionUI(station.qIndex, true);
+
+    // Cek apakah semua 10 soal di level ini sudah dijawab
+    const solvedCount = stations.filter(s => s.solved).length;
+    if (solvedCount === stations.length) {
+        setTimeout(() => {
+            showToast(`SEMUA 10 SOAL SELESAI! Lari ke kanan menuju Tiang Bendera 🚩!`, '#facc15');
+        }, 1800);
+    }
+}
+
+// Tombol Bendera: Bantu Siswa Lompat ke Soal yang Belum Terjawab
+function teleportToActiveQuestion() {
+    if (!gameRunning) return;
+    const nextUnanswered = stations.find(s => !s.solved);
+    if (nextUnanswered) {
+        player.x = nextUnanswered.startX - 40;
+        player.y = getGroundY() - player.h - 10;
+        player.vx = 0;
+        player.vy = 0;
+        sfxJump();
+        showToast(`Melompat ke Soal #${nextUnanswered.qIndex + 1}!`);
+    } else {
+        // Jika semua soal sudah terjawab, lompat dekat bendera
+        player.x = flagPoleX - 180;
+        player.y = getGroundY() - player.h - 10;
+        sfxJump();
+        showToast(`Menuju Tiang Bendera Akhir Level!`);
+    }
+}
+
+function updateHUD() {
+    const solvedCount = stations.filter(s => s.solved).length;
+    document.getElementById('hudScore').textContent = String(score).padStart(6, '0');
+    document.getElementById('hudCoins').textContent = 'x' + String(coins).padStart(2, '0');
+    document.getElementById('hudQuiz').textContent = `${solvedCount}/${stations.length || 10}`;
+    document.getElementById('hudWorld').textContent = LEVELS_DATA[currentLevelIdx].world;
+    document.getElementById('hudTime').textContent = String(timeLeft).padStart(3, '0');
+
+    const livesContainer = document.getElementById('hudLives');
+    livesContainer.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+        const span = document.createElement('span');
+        span.textContent = i < lives ? '❤️' : '🖤';
+        livesContainer.appendChild(span);
+    }
+}
+
+/* ============================================================================
+   4. UPDATE FISIKA & TABRAKAN (GAME LOOP)
+   ============================================================================ */
+function updatePhysics() {
+    if (!gameRunning || gamePaused) return;
+
+    const groundY = getGroundY();
+
+    // Pergerakan Horizontal Mario
+    if (keys.left) {
+        player.vx = -player.speed;
+        player.facing = -1;
+        player.walkFrame += 0.22;
+    } else if (keys.right) {
+        player.vx = player.speed;
+        player.facing = 1;
+        player.walkFrame += 0.22;
+    } else {
+        player.vx *= 0.78;
+        if (Math.abs(player.vx) < 0.1) player.vx = 0;
+        player.walkFrame = 0;
+    }
+
+    // Lompat
+    if (keys.jump && player.onGround) {
+        player.vy = player.jumpForce;
+        player.onGround = false;
+        sfxJump();
+    }
+
+    // Gravitasi
+    player.vy += 0.62;
+    if (player.vy > 14) player.vy = 14;
+
+    // Simpan posisi sebelumnya untuk deteksi tabrakan akurat
+    const prevX = player.x;
+    const prevY = player.y;
+
+    player.x += player.vx;
+    if (player.x < 20) player.x = 20;
+    if (player.x > worldWidth - 60) player.x = worldWidth - 60;
+
+    // Tabrakan Horizontal dengan Pipa
+    pipes.forEach(p => {
+        const pipeTop = groundY - p.h;
+        if (
+            player.x + player.w > p.x &&
+            player.x < p.x + p.w &&
+            player.y + player.h > pipeTop + 4
+        ) {
+            if (prevX + player.w <= p.x) {
+                player.x = p.x - player.w;
+                player.vx = 0;
+            } else if (prevX >= p.x + p.w) {
+                player.x = p.x + p.w;
+                player.vx = 0;
+            }
+        }
+    });
+
+    // Gerak Vertikal
+    player.y += player.vy;
+    player.onGround = false;
+
+    // Tabrakan dengan Tanah
+    if (player.y + player.h >= groundY) {
+        player.y = groundY - player.h;
+        player.vy = 0;
+        player.onGround = true;
+    }
+
+    // Tabrakan Vertikal dengan Pipa (Berdiri di atas pipa)
+    pipes.forEach(p => {
+        const pipeTop = groundY - p.h;
+        if (
+            player.x + player.w > p.x + 4 &&
+            player.x < p.x + p.w - 4
+        ) {
+            if (prevY + player.h <= pipeTop + 8 && player.y + player.h >= pipeTop && player.vy >= 0) {
+                player.y = pipeTop - player.h;
+                player.vy = 0;
+                player.onGround = true;
+            }
+        }
+    });
+
+    // Tabrakan dengan Blok Jawaban (A, B, C, D) -> SUNDUL DARI BAWAH atau PIJAK DARI ATAS
+    stations.forEach(st => {
+        // Pijakan Papan Nomor Soal (#1 - #10) di sebelah kiri blok agar Mario juga bisa naik bertahap
+        const signX = st.startX - 52;
+        const signW = 40;
+        const signTop = groundY - 56;
+        if (player.x + player.w > signX + 2 && player.x < signX + signW - 2) {
+            if (prevY + player.h <= signTop + 10 && player.y + player.h >= signTop && player.vy >= 0) {
+                player.y = signTop - player.h;
+                player.vy = 0;
+                player.onGround = true;
+            }
+        }
+
+        st.blocks.forEach(b => {
+            if (b.bounceY < 0) b.bounceY += 2;
+            const blockY = groundY - b.offsetY - b.h;
+
+            // Lebar pijakan mencakup bata pengapit kiri-kanan agar Mario leluasa berdiri & berjalan di atas kotak jawaban
+            const platLeft = b.x - 10;
+            const platRight = b.x + b.w + 10;
+            const overlapTop = (player.x + player.w > platLeft) && (player.x < platRight);
+            const overlapHeadbutt = (player.x + player.w > b.x + 2) && (player.x < b.x + b.w - 2);
+
+            // 1. Mendarat dan berdiri di atas kotak jawaban
+            if (overlapTop && player.vy >= 0 && prevY + player.h <= blockY + 14 && player.y + player.h >= blockY) {
+                player.y = blockY - player.h;
+                player.vy = 0;
+                player.onGround = true;
+            }
+            // 2. Menyundul dari bawah (Mario melompat ke atas mengenai bagian bawah blok)
+            else if (overlapHeadbutt && player.vy < 0 && prevY >= blockY + b.h - 14 && player.y <= blockY + b.h) {
+                player.y = blockY + b.h;
+                player.vy = 2.5; // Pantul turun
+                handleBlockHeadbutt(st, b);
+            }
+
+            // 3. Animasi Muncul & Deteksi Ambil Jamur Bonus di Atas Kotak Jawaban
+            if (b.hasMushroom && !b.mushroomCollected) {
+                if (b.mushroomRiseY < 30) {
+                    b.mushroomRiseY += 2;
+                }
+                const mushX = b.x + 10;
+                const mushY = blockY - b.mushroomRiseY;
+                const mushW = 32;
+                const mushH = 30;
+
+                // Cek apakah Mario menyentuh Jamur Bonus
+                if (
+                    player.x + player.w > mushX - 4 &&
+                    player.x < mushX + mushW + 4 &&
+                    player.y + player.h > mushY - 4 &&
+                    player.y < mushY + mushH + 4
+                ) {
+                    b.mushroomCollected = true;
+                    score += 150;
+                    coins += 3;
+                    sfxPowerUp();
+
+                    floatingTexts.push({
+                        x: mushX + mushW / 2,
+                        y: mushY - 12,
+                        text: "🍄 BONUS! +150",
+                        color: "#4ade80",
+                        life: 65
+                    });
+
+                    for (let p = 0; p < 10; p++) {
+                        particles.push({
+                            x: mushX + mushW / 2,
+                            y: mushY + 10,
+                            vx: (Math.random() - 0.5) * 6,
+                            vy: -Math.random() * 6 - 2,
+                            color: ['#f97316', '#fde047', '#4ade80'][p % 3],
+                            life: 35
+                        });
+                    }
+
+                    showToast("Asyik! Kamu mengambil Jamur Bonus! Tambahan +150 Poin & +3 Koin!", "#fde047");
+                    updateHUD();
+                }
+            }
+        });
+    });
+
+    // Update Musuh (Goomba)
+    if (player.invincibleTimer > 0) player.invincibleTimer--;
+
+    enemies.forEach(en => {
+        if (!en.alive) {
+            if (en.squishTimer > 0) en.squishTimer--;
+            return;
+        }
+        en.x += en.vx;
+        if (en.x < en.minX) { en.x = en.minX; en.vx *= -1; }
+        if (en.x + en.w > en.maxX) { en.x = en.maxX - en.w; en.vx *= -1; }
+
+        const enY = groundY - en.h;
+        // Cek tabrakan Mario dengan Goomba
+        if (
+            player.x + player.w - 6 > en.x &&
+            player.x + 6 < en.x + en.w &&
+            player.y + player.h > enY &&
+            player.y < enY + en.h
+        ) {
+            // Jika Mario menginjak dari atas
+            if (player.vy > 0 && prevY + player.h <= enY + 16) {
+                en.alive = false;
+                en.squishTimer = 35;
+                player.vy = -9.5;
+                score += 100;
+                sfxStomp();
+                floatingTexts.push({
+                    x: en.x + en.w / 2,
+                    y: enY - 10,
+                    text: "GOOMBA! +100",
+                    color: "#60a5fa",
+                    life: 45
+                });
+                updateHUD();
+            } else if (player.invincibleTimer === 0) {
+                // Tertabrak dari samping (Persis pesan pada gambar yang dikirim user!)
+                player.invincibleTimer = 75;
+                player.vy = -7;
+                player.vx = (player.x < en.x) ? -6 : 6;
+                lives--;
+                sfxWrong();
+                showToast("Aduh! Tertabrak Goomba! Injak dari atas untuk mengalahkannya.", "#f87171");
+                updateHUD();
+                if (lives <= 0) {
+                    triggerLevelEnd(false);
+                }
+            }
+        }
+    });
+
+    // Cek apakah Mario mencapai Tiang Bendera di ujung kanan
+    if (player.x + player.w >= flagPoleX) {
+        const solvedCount = stations.filter(s => s.solved).length;
+        if (solvedCount < stations.length) {
+            // Jika masih ada soal yang terlewat, beri tahu dan arahkan ke soal tersebut
+            const missing = stations.find(s => !s.solved);
+            showToast(`Kamu belum menjawab Soal #${missing.qIndex + 1}! Yuk jawab dulu semua 10 soal!`, "#facc15");
+            player.x = flagPoleX - player.w - 15;
+            player.vx = 0;
+        } else {
+            triggerLevelEnd(true);
+        }
+    }
+
+    // Update Kamera mengikuti Mario dengan mulus (menyesuaikan lebar layar Portrait maupun Landscape)
+    const logicalW = getLogicalWidth();
+    const isPortrait = canvas.height > canvas.width;
+    const camAnchor = isPortrait ? 0.28 : 0.35;
+    const targetCamX = player.x - logicalW * camAnchor;
+    cameraX += (targetCamX - cameraX) * 0.14;
+    if (cameraX < 0) cameraX = 0;
+    if (cameraX > worldWidth - logicalW) cameraX = Math.max(0, worldWidth - logicalW);
+
+    // Update Soal Aktif di HUD berdasarkan stasiun terdekat
+    const nearestIdx = getNearestStationIndex();
+    updateQuestionUI(nearestIdx);
+
+    // Update Teks Melayang & Partikel
+    floatingTexts.forEach(ft => { ft.y -= 1.2; ft.life--; });
+    floatingTexts = floatingTexts.filter(ft => ft.life > 0);
+
+    particles.forEach(pt => {
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.vy += 0.35;
+        pt.life--;
+    });
+    particles = particles.filter(pt => pt.life > 0);
+}
+
+/* ============================================================================
+   5. RENDERING VISUAL RETRO SUPER MARIO BROS (CANVAS 2D)
+   ============================================================================ */
+function drawGame() {
+    const levelData = LEVELS_DATA[currentLevelIdx];
+    const groundY = getGroundY();
+    const logicalW = getLogicalWidth();
+    const logicalH = getLogicalHeight();
+
+    // 1. Langit Latar Belakang
+    ctx.fillStyle = levelData.skyColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.scale(viewScale, viewScale);
+    ctx.translate(-Math.floor(cameraX), 0);
+
+    // 2. Gambar Awan Pixel Retro
+    clouds.forEach(c => {
+        if (c.x + c.w < cameraX - 100 || c.x > cameraX + logicalW + 100) return;
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3;
+        ctx.fillRect(c.x, c.y, c.w, 28);
+        ctx.fillRect(c.x + 16, c.y - 14, c.w - 32, 16);
+        ctx.strokeRect(c.x, c.y, c.w, 28);
+    });
+
+    // 3. Gambar Bukit Hijau Bermata (Seperti di Gambar Referensi)
+    hills.forEach(h => {
+        if (h.x + h.w < cameraX - 100 || h.x > cameraX + logicalW + 100) return;
+        ctx.fillStyle = levelData.hillColor;
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(h.x + h.w / 2, groundY, h.w / 2, Math.PI, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Mata hitam di bukit
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(h.x + h.w / 2 - 14, groundY - h.w / 4, 5, 14);
+        ctx.fillRect(h.x + h.w / 2 + 10, groundY - h.w / 4, 5, 14);
+    });
+
+    // 4. Semak Hijau
+    bushes.forEach(bs => {
+        if (bs.x + bs.w < cameraX - 100 || bs.x > cameraX + logicalW + 100) return;
+        ctx.fillStyle = "#4ade80";
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2.5;
+        ctx.fillRect(bs.x, groundY - 22, bs.w, 22);
+        ctx.strokeRect(bs.x, groundY - 22, bs.w, 22);
+    });
+
+    // 5. Pipa Hijau Klasik
+    pipes.forEach(p => {
+        if (p.x + p.w < cameraX - 100 || p.x > cameraX + logicalW + 100) return;
+        const py = groundY - p.h;
+        // Badan pipa
+        ctx.fillStyle = "#00c800";
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 3;
+        ctx.fillRect(p.x + 4, py + 24, p.w - 8, p.h - 24);
+        ctx.strokeRect(p.x + 4, py + 24, p.w - 8, p.h - 24);
+        // Highlight pipa
+        ctx.fillStyle = "#68ff4c";
+        ctx.fillRect(p.x + 10, py + 26, 8, p.h - 28);
+        // Bibir atas pipa
+        ctx.fillStyle = "#00c800";
+        ctx.fillRect(p.x, py, p.w, 24);
+        ctx.strokeRect(p.x, py, p.w, 24);
+        ctx.fillStyle = "#68ff4c";
+        ctx.fillRect(p.x + 8, py + 3, 10, 18);
+    });
+
+    // 6. Stasiun Soal & 4 Blok Jawaban (A, B, C, D)
+    stations.forEach(st => {
+        if (st.startX + 400 < cameraX || st.startX - 100 > cameraX + logicalW) return;
+
+        // Papan Nomor Soal di Tanah (Sekaligus pijakan batu bantu untuk melompat ke atas blok)
+        ctx.fillStyle = st.solved ? (st.answeredCorrectly ? "#16a34a" : "#dc2626") : "#1e293b";
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.fillRect(st.startX - 52, groundY - 56, 40, 56);
+        ctx.strokeRect(st.startX - 52, groundY - 56, 40, 56);
+        ctx.fillStyle = "#fbbf24";
+        ctx.font = '10px "Press Start 2P"';
+        ctx.textAlign = "center";
+        ctx.fillText(`#${st.qIndex + 1}`, st.startX - 32, groundY - 26);
+
+        // Gambar ke-4 Blok (A, B, C, D)
+        st.blocks.forEach(b => {
+            const by = groundY - b.offsetY - b.h + b.bounceY;
+
+            // Bata pengapit kiri-kanan supaya tampak persis seperti blok Mario
+            ctx.fillStyle = "#b8440a";
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 2.5;
+            ctx.fillRect(b.x - 11, by + 6, 11, b.h - 12);
+            ctx.strokeRect(b.x - 11, by + 6, 11, b.h - 12);
+            ctx.fillRect(b.x + b.w, by + 6, 11, b.h - 12);
+            ctx.strokeRect(b.x + b.w, by + 6, 11, b.h - 12);
+
+            // Warna Blok Utama
+            if (b.state === 'correct') {
+                ctx.fillStyle = "#22c55e"; // Hijau sukses
+                // Gambar Jamur Power-Up di atas blok jika muncul dari sundulan benar dan belum diambil
+                if (b.hasMushroom && !b.mushroomCollected) {
+                    const floatOffset = Math.sin(Date.now() / 160) * 2.5;
+                    drawMushroom(b.x + 10, by - b.mushroomRiseY + floatOffset);
+                }
+            } else if (b.state === 'wrong' || b.state === 'locked') {
+                ctx.fillStyle = "#78716c"; // Blok batu mati
+            } else {
+                ctx.fillStyle = "#f59e0b"; // Blok kuning aktif
+            }
+
+            ctx.fillRect(b.x, by, b.w, b.h);
+            ctx.strokeRect(b.x, by, b.w, b.h);
+
+            // Paku sudut blok retro
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(b.x + 4, by + 4, 3, 3);
+            ctx.fillRect(b.x + b.w - 7, by + 4, 3, 3);
+            ctx.fillRect(b.x + 4, by + b.h - 7, 3, 3);
+            ctx.fillRect(b.x + b.w - 7, by + b.h - 7, 3, 3);
+
+            // Label Huruf A / B / C / D
+            ctx.fillStyle = "#ffffff";
+            ctx.font = '16px "Press Start 2P"';
+            ctx.textAlign = "center";
+            const label = b.state === 'correct' ? '✓' : (b.state === 'wrong' ? 'X' : b.letter);
+            ctx.fillText(label, b.x + b.w / 2, by + 33);
+
+            // Pita warna kode di bagian bawah blok agar serasi dengan kartu opsi di atas
+            ctx.fillStyle = b.color;
+            ctx.fillRect(b.x + 4, by + b.h - 8, b.w - 8, 5);
+        });
+    });
+
+    // 7. Tiang Bendera Finish di Ujung Level
+    ctx.fillStyle = "#fde047";
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 3;
+    ctx.fillRect(flagPoleX, groundY - 260, 10, 260);
+    ctx.strokeRect(flagPoleX, groundY - 260, 10, 260);
+    // Bola emas puncak tiang
+    ctx.beginPath();
+    ctx.arc(flagPoleX + 5, groundY - 266, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // Bendera Hijau IPAS
+    ctx.fillStyle = "#22c55e";
+    ctx.beginPath();
+    ctx.moveTo(flagPoleX + 10, groundY - 250);
+    ctx.lineTo(flagPoleX + 86, groundY - 220);
+    ctx.lineTo(flagPoleX + 10, groundY - 190);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 8. Gambar Musuh Goomba
+    enemies.forEach(en => {
+        if (!en.alive && en.squishTimer <= 0) return;
+        const ey = groundY - (en.alive ? en.h : 14);
+        const eh = en.alive ? en.h : 14;
+
+        // Tubuh Jamur Coklat Goomba
+        ctx.fillStyle = "#9a3412";
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2.5;
+        ctx.fillRect(en.x, ey, en.w, eh);
+        ctx.strokeRect(en.x, ey, en.w, eh);
+
+        if (en.alive) {
+            // Mata Goomba
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(en.x + 6, ey + 8, 6, 10);
+            ctx.fillRect(en.x + en.w - 12, ey + 8, 6, 10);
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(en.x + 8, ey + 11, 3, 6);
+            ctx.fillRect(en.x + en.w - 11, ey + 11, 3, 6);
+            // Kaki Goomba
+            const step = Math.floor(Date.now() / 160) % 2;
+            ctx.fillRect(en.x + (step ? 4 : 2), ey + eh - 5, 10, 5);
+            ctx.fillRect(en.x + en.w - (step ? 12 : 14), ey + eh - 5, 10, 5);
+        }
+    });
+
+    // 9. Gambar Karakter Utama (Mario)
+    if (player.invincibleTimer % 4 < 2) {
+        drawMario(player.x, player.y, player.w, player.h, player.facing);
+    }
+
+    // 10. Lantai Bata Merah Khas Super Mario Bros (Bagian Bawah Layar)
+    const startBrickX = Math.floor(cameraX / 48) * 48;
+    const endBrickX = cameraX + logicalW + 96;
+    for (let bx = startBrickX; bx < endBrickX; bx += 48) {
+        for (let by = groundY; by < logicalH + 32; by += 32) {
+            ctx.fillStyle = levelData.groundColor;
+            ctx.fillRect(bx, by, 46, 30);
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(bx, by, 46, 30);
+            // Highlight bata atas
+            ctx.fillStyle = "#fca5a5";
+            ctx.fillRect(bx + 2, by + 2, 42, 3);
+            // Garis nat bata tengah
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(bx + 22, by, 2, 15);
+            ctx.fillRect(bx, by + 15, 46, 2);
+            ctx.fillRect(bx + 10, by + 15, 2, 15);
+        }
+    }
+
+    // 11. Partikel & Teks Skor Melayang
+    particles.forEach(pt => {
+        ctx.fillStyle = pt.color;
+        ctx.fillRect(pt.x, pt.y, 6, 6);
+    });
+
+    floatingTexts.forEach(ft => {
+        ctx.font = '12px "Press Start 2P"';
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "center";
+        ctx.fillText(ft.text, ft.x + 2, ft.y + 2);
+        ctx.fillStyle = ft.color;
+        ctx.fillText(ft.text, ft.x, ft.y);
+    });
+
+    ctx.restore();
+}
+
+function drawMushroom(x, y) {
+    // Batang jamur
+    ctx.fillStyle = "#fde68a";
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
+    ctx.fillRect(x + 8, y + 16, 16, 14);
+    ctx.strokeRect(x + 8, y + 16, 16, 14);
+    // Topi jamur oranye-merah
+    ctx.fillStyle = "#f97316";
+    ctx.fillRect(x, y, 32, 18);
+    ctx.strokeRect(x, y, 32, 18);
+    // Bintik putih
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(x + 4, y + 4, 6, 6);
+    ctx.fillRect(x + 22, y + 4, 6, 6);
+}
+
+function drawMario(x, y, w, h, facing) {
+    ctx.save();
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
+
+    // Topi Merah
+    ctx.fillStyle = "#dc2626";
+    ctx.fillRect(x + 4, y, w - 8, 10);
+    ctx.strokeRect(x + 4, y, w - 8, 10);
+    if (facing === 1) {
+        ctx.fillRect(x + 12, y + 4, w - 8, 6);
+    } else {
+        ctx.fillRect(x - 4, y + 4, w - 8, 6);
+    }
+
+    // Wajah
+    ctx.fillStyle = "#fdba74";
+    ctx.fillRect(x + 6, y + 10, w - 12, 12);
+    ctx.strokeRect(x + 6, y + 10, w - 12, 12);
+
+    // Mata & Kumis
+    ctx.fillStyle = "#000000";
+    const eyeX = facing === 1 ? x + w - 13 : x + 9;
+    ctx.fillRect(eyeX, y + 12, 4, 5);
+    ctx.fillRect(eyeX - 2, y + 18, 8, 3);
+
+    // Baju Merah & Wearpack Biru
+    ctx.fillStyle = "#dc2626";
+    ctx.fillRect(x + 4, y + 22, w - 8, 14);
+    ctx.strokeRect(x + 4, y + 22, w - 8, 14);
+
+    ctx.fillStyle = "#2563eb";
+    ctx.fillRect(x + 8, y + 25, w - 16, 12);
+    ctx.strokeRect(x + 8, y + 25, w - 16, 12);
+
+    // Kancing Kuning
+    ctx.fillStyle = "#facc15";
+    ctx.fillRect(x + 11, y + 28, 3, 3);
+    ctx.fillRect(x + w - 14, y + 28, 3, 3);
+
+    // Sepatu Coklat
+    ctx.fillStyle = "#78350f";
+    const legOffset = Math.sin(player.walkFrame) * 3;
+    ctx.fillRect(x + 4, y + 37 + legOffset, 11, 7);
+    ctx.strokeRect(x + 4, y + 37 + legOffset, 11, 7);
+    ctx.fillRect(x + w - 15, y + 37 - legOffset, 11, 7);
+    ctx.strokeRect(x + w - 15, y + 37 - legOffset, 11, 7);
+
+    ctx.restore();
+}
+
+/* ============================================================================
+   6. PENGATURAN FLOW GAME, TIMER, DAN MODAL
+   ============================================================================ */
+function startGame(levelIdx = 0) {
+    try {
+        initAudio();
+    } catch (e) {}
+    gamePaused = false;
+    updatePauseButtonUI();
+
+    // Pastikan semua modal tertutup sepenuhnya saat permainan dimulai
+    ['startModal', 'resultModal', 'pauseModal', 'levelSelectModal', 'materiModal', 'infoModal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = 'none';
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+    });
+
+    resizeCanvas();
+    displayedStationIdx = -1;
+    buildLevel(levelIdx);
+    gameRunning = true;
+    startBGM();
+
+    // Fokuskan ke window & canvas agar tombol keyboard langsung merespons
+    window.focus();
+    if (canvas) canvas.focus();
+
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        if (!gameRunning || gamePaused) return;
+        timeLeft--;
+        if (timeLeft <= 0) {
+            timeLeft = 0;
+            triggerLevelEnd(false);
+        }
+        updateHUD();
+    }, 1000);
+}
+
+// Fitur Pause (Hentikan Sementara Permainan)
+function togglePauseGame() {
+    if (!gameRunning) return;
+    initAudio();
+    gamePaused = !gamePaused;
+    updatePauseButtonUI();
+
+    const pauseModal = document.getElementById('pauseModal');
+    if (gamePaused) {
+        pauseModal.style.display = 'flex';
+        pauseModal.classList.remove('hidden');
+        pauseModal.classList.add('flex');
+        stopBGM();
+        showToast("Permainan dijeda (Paused). Klik Lanjutkan untuk bermain kembali.", "#c084fc");
+    } else {
+        pauseModal.style.display = 'none';
+        pauseModal.classList.add('hidden');
+        pauseModal.classList.remove('flex');
+        if (bgmEnabled) startBGM();
+        showToast(`Lanjut bermain di WORLD ${LEVELS_DATA[currentLevelIdx].world}!`);
+        window.focus();
+        if (canvas) canvas.focus();
+    }
+}
+
+function updatePauseButtonUI() {
+    const btn = document.getElementById('btnPause');
+    if (!btn) return;
+    if (gamePaused) {
+        btn.innerHTML = '▶ LANJUT';
+        btn.className = 'retro-btn bg-emerald-500 hover:bg-emerald-400 text-black pixel-font text-[8px] sm:text-[10px] px-2.5 py-1.5 rounded flex items-center gap-1';
+    } else {
+        btn.innerHTML = '⏸️ PAUSE';
+        btn.className = 'retro-btn bg-purple-600 hover:bg-purple-500 text-white pixel-font text-[8px] sm:text-[10px] px-2.5 py-1.5 rounded flex items-center gap-1';
+    }
+}
+
+// Fitur Kembali ke Menu Awal (Start Screen)
+function returnToMainMenu() {
+    gameRunning = false;
+    gamePaused = false;
+    updatePauseButtonUI();
+    stopBGM();
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    // Sembunyikan semua modal aktif lainnya
+    ['pauseModal', 'resultModal', 'levelSelectModal', 'materiModal', 'infoModal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = 'none';
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+    });
+
+    // Tampilkan layar utama
+    const startModal = document.getElementById('startModal');
+    if (startModal) {
+        startModal.style.display = 'flex';
+        startModal.classList.remove('hidden');
+        startModal.classList.add('flex');
+    }
+}
+
+// Konten & Pengaturan Modal Petunjuk, Tujuan Pembelajaran (TP), dan Capaian Pembelajaran (CP)
+const INFO_CONTENT = {
+    petunjuk: {
+        title: "🎮 PETUNJUK CARA BERMAIN",
+        headerBg: "bg-sky-500",
+        html: `
+            <div class="space-y-3">
+                <div class="bg-slate-800/90 border border-sky-400/50 p-3.5 rounded-xl">
+                    <h3 class="pixel-font text-xs text-sky-300 mb-2">1. KONTROL GERAKAN MARIO</h3>
+                    <ul class="list-disc list-inside text-slate-200 space-y-1 text-xs sm:text-sm">
+                        <li><b>Laptop / PC:</b> Gunakan tombol <b>Panah Kiri/Kanan</b> atau <b>A / D</b> untuk berjalan, dan <b>Panah Atas / W / Spasi</b> untuk melompat. Tekan tombol <b>P</b> untuk Pause.</li>
+                        <li><b>HP / Tablet:</b> Gunakan tombol <b>◀</b> dan <b>▶</b> di kiri bawah layar untuk bergerak, serta tombol merah <b>▲ LOMPAT</b> di kanan bawah.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/90 border border-amber-400/50 p-3.5 rounded-xl">
+                    <h3 class="pixel-font text-xs text-amber-300 mb-2">2. CARA MENJAWAB SOAL (MENYUNDUL BLOK)</h3>
+                    <ul class="list-disc list-inside text-slate-200 space-y-1 text-xs sm:text-sm">
+                        <li>Baca pertanyaan dan 4 pilihan jawaban (A, B, C, D) pada papan soal di bagian atas layar.</li>
+                        <li>Arahkan Mario ke bawah <b>Blok Jawaban [A], [B], [C], atau [D]</b> yang menurutmu benar, lalu <b>melompatlah untuk menyundul blok tersebut dari bawah!</b> Kamu juga bisa melompat naik ke atas deretan kotak jawaban.</li>
+                        <li>Jika <b>BENAR</b>, blok berubah menjadi hijau (✓) (+250 poin) dan memunculkan <b>Jamur Bonus 🍄</b> di atasnya. Lompatlah ke atas kotak jawaban untuk mengambil jamur dan meraih <b>tambahan +150 poin & +3 koin!</b></li>
+                        <li>Jika <b>SALAH (Kurang Tepat)</b>, soal tersebut langsung terkunci, jawaban yang benar akan ditampilkan, dan kamu <b>harus melanjutkan ke pertanyaan berikutnya!</b></li>
+                    </ul>
+                </div>
+                <div class="bg-slate-800/90 border border-emerald-400/50 p-3.5 rounded-xl">
+                    <h3 class="pixel-font text-xs text-emerald-300 mb-2">3. MENGALAHKAN GOOMBA & MENYELESAIKAN LEVEL</h3>
+                    <ul class="list-disc list-inside text-slate-200 space-y-1 text-xs sm:text-sm">
+                        <li>Hindari tabrakan samping dengan jamur coklat (<b>Goomba</b>) agar nyawa (❤️) tidak berkurang. <b>Lompati & injak bagian atas Goomba</b> untuk mengalahkannya!</li>
+                        <li>Jawab seluruh <b>10 Soal</b> di setiap level, lalu larilah ke ujung kanan menyentuh <b>Tiang Bendera 🚩</b> untuk lanjut ke World berikutnya!</li>
+                    </ul>
+                </div>
+            </div>
+        `
+    },
+    tp: {
+        title: "🎯 TUJUAN PEMBELAJARAN (TP)",
+        headerBg: "bg-purple-500",
+        html: `
+            <div class="bg-slate-800/90 border border-purple-400/50 p-4 rounded-xl space-y-3">
+                <p class="text-purple-200 font-semibold text-xs sm:text-sm">
+                    Melalui permainan edukasi interaktif <b>Super IPAS Bros</b> ini, peserta didik Kelas 5 SD diharapkan mampu:
+                </p>
+                <ol class="list-decimal list-inside space-y-2 text-slate-200 text-xs sm:text-sm">
+                    <li><b>Mengidentifikasi Komponen Ekosistem (World 1-1):</b> Membedakan komponen biotik (hidup) dan abiotik (tak hidup) serta tingkat organisasi kehidupan (individu, populasi, komunitas, dan habitat).</li>
+                    <li><b>Menganalisis Peran dalam Rantai Makanan (World 1-2):</b> Menentukan peran makhluk hidup sebagai produsen, konsumen tingkat I, II, konsumen puncak, serta pengurai (dekomposer) pada berbagai ekosistem.</li>
+                    <li><b>Memahami Aliran Energi & Jaring-Jaring Makanan (World 1-3):</b> Menjelaskan hubungan antarrantai makanan dalam jaring-jaring makanan dan piramida makanan serta dampak perubahan salah satu populasi.</li>
+                    <li><b>Mengklasifikasikan Jenis Simbiosis (World 1-4):</b> Membedakan hubungan simbiosis mutualisme, komensalisme, dan parasitisme beserta contoh nyata dalam kehidupan sehari-hari.</li>
+                    <li><b>Menerapkan Upaya Pelestarian Ekosistem (World 1-5):</b> Menganalisis faktor penyebab gangguan keseimbangan alam dan menunjukkan sikap peduli terhadap kelestarian lingkungan.</li>
+                </ol>
+            </div>
+        `
+    },
+    cp: {
+        title: "📜 CAPAIAN PEMBELAJARAN (CP)",
+        headerBg: "bg-teal-400",
+        html: `
+            <div class="space-y-3 text-xs sm:text-sm">
+                <div class="bg-slate-800/90 border border-teal-400/50 p-4 rounded-xl">
+                    <div class="pixel-font text-[10px] text-teal-300 mb-1">IDENTITAS MATA PELAJARAN</div>
+                    <p class="text-slate-200"><b>Mata Pelajaran:</b> Ilmu Pengetahuan Alam dan Sosial (IPAS)</p>
+                    <p class="text-slate-200"><b>Fase / Kelas:</b> Fase C / Kelas 5 Sekolah Dasar (SD)</p>
+                    <p class="text-slate-200"><b>Topik Utama:</b> Harmoni dalam Ekosistem (Rantai Makanan, Jaring-Jaring Makanan, dan Simbiosis)</p>
+                </div>
+
+                <div class="bg-slate-800/90 border border-teal-400/50 p-4 rounded-xl space-y-2">
+                    <div class="pixel-font text-[10px] text-teal-300">ELEMEN PEMAHAMAN IPAS (SAINS & SOSIAL)</div>
+                    <p class="text-slate-200 leading-relaxed">
+                        Peserta didik menyelidiki bagaimana <b>hubungan saling ketergantungan antar komponen biotik dan abiotik</b> dapat memengaruhi kestabilan suatu ekosistem di lingkungan sekitarnya. Peserta didik memahami konsep aliran energi melalui <b>rantai makanan dan jaring-jaring makanan</b>, bentuk interaksi khas antarmakhluk hidup (<b>simbiosis</b>), serta menganalisis dampak aktivitas manusia terhadap keseimbangan ekosistem dan upaya pelestariannya.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/90 border border-teal-400/50 p-4 rounded-xl space-y-2">
+                    <div class="pixel-font text-[10px] text-teal-300">ELEMEN KETERAMPILAN PROSES</div>
+                    <p class="text-slate-200 leading-relaxed">
+                        Mengamati fenomena ekosistem, mempertanyakan dan memprediksi dampak perubahan populasi makhluk hidup, mengolah informasi secara kritis melalui pemecahan masalah kuis interaktif, serta mengomunikasikan kesimpulan tentang pentingnya menjaga harmoni alam.
+                    </p>
+                </div>
+            </div>
+        `
+    }
+};
+
+function openInfoModal(tabKey = 'petunjuk') {
+    const data = INFO_CONTENT[tabKey] || INFO_CONTENT.petunjuk;
+    document.getElementById('infoModalTitle').textContent = data.title;
+    document.getElementById('infoModalHeader').className = `${data.headerBg} border-b-4 border-black px-5 py-3 flex justify-between items-center`;
+    document.getElementById('infoModalBody').innerHTML = data.html;
+
+    // Update tampilan tombol tab
+    const tabs = [
+        { id: 'tabBtnPetunjuk', key: 'petunjuk', activeCls: 'border-sky-400 bg-sky-500 text-black' },
+        { id: 'tabBtnTp', key: 'tp', activeCls: 'border-purple-400 bg-purple-500 text-white' },
+        { id: 'tabBtnCp', key: 'cp', activeCls: 'border-teal-400 bg-teal-400 text-black' }
+    ];
+    tabs.forEach(t => {
+        const el = document.getElementById(t.id);
+        if (!el) return;
+        if (t.key === tabKey) {
+            el.className = `pixel-font text-[9px] px-3 py-1.5 rounded border font-bold ${t.activeCls}`;
+        } else {
+            el.className = `pixel-font text-[9px] px-3 py-1.5 rounded border border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700`;
+        }
+    });
+
+    const modal = document.getElementById('infoModal');
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeInfoModal() {
+    const modal = document.getElementById('infoModal');
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+function triggerLevelEnd(isWin) {
+    gameRunning = false;
+    const modal = document.getElementById('resultModal');
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    const correctCount = stations.filter(s => s.answeredCorrectly === true).length;
+    document.getElementById('resultCorrect').textContent = `${correctCount}/10`;
+    document.getElementById('resultScore').textContent = String(score).padStart(6, '0');
+
+    const btnNext = document.getElementById('btnNextLevel');
+
+    if (isWin) {
+        sfxLevelClear();
+        document.getElementById('resultIcon').textContent = '🏆';
+        document.getElementById('resultTitle').textContent = `WORLD ${LEVELS_DATA[currentLevelIdx].world} SELESAI!`;
+        if (currentLevelIdx < LEVELS_DATA.length - 1) {
+            document.getElementById('resultDesc').textContent = `Luar biasa! Kamu menguasai materi "${LEVELS_DATA[currentLevelIdx].title}". Siap ke level berikutnya?`;
+            btnNext.classList.remove('hidden');
+            btnNext.textContent = `LANJUT WORLD ${LEVELS_DATA[currentLevelIdx + 1].world} ▶`;
+        } else {
+            document.getElementById('resultDesc').textContent = `SELAMAT! Kamu telah menamatkan seluruh 5 Level (50 Soal) Super IPAS Bros Kelas 5 SD!`;
+            btnNext.classList.add('hidden');
+        }
+    } else {
+        sfxWrong();
+        document.getElementById('resultIcon').textContent = '💥';
+        document.getElementById('resultTitle').textContent = `COBA LAGI YUK!`;
+        document.getElementById('resultDesc').textContent = `Jangan menyerah! Pelajari rangkuman materi dan ulangi level ini.`;
+        btnNext.classList.add('hidden');
+    }
+}
+
+function replayCurrentLevel() {
+    startGame(currentLevelIdx);
+}
+
+function goNextLevel() {
+    if (currentLevelIdx < LEVELS_DATA.length - 1) {
+        startGame(currentLevelIdx + 1);
+    }
+}
+
+function openMateriModal() {
+    const m = document.getElementById('materiModal');
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+    }
+}
+
+function closeMateriModal() {
+    const m = document.getElementById('materiModal');
+    m.style.display = 'none';
+    m.classList.add('hidden');
+    m.classList.remove('flex');
+}
+
+function openLevelSelectModal() {
+    const list = document.getElementById('levelSelectList');
+    if (!list) return;
+    list.innerHTML = '';
+    LEVELS_DATA.forEach((lv, idx) => {
+        const active = idx === currentLevelIdx;
+        const item = document.createElement('div');
+        item.className = `p-3 rounded-xl border-2 flex justify-between items-center ${active ? 'bg-slate-800 border-yellow-400' : 'bg-slate-900 border-slate-700'}`;
+        item.innerHTML = `
+            <div>
+                <div class="pixel-font text-[10px] text-amber-400">WORLD ${lv.world}</div>
+                <div class="font-bold text-sm text-white mt-0.5">${lv.title} (10 Soal)</div>
+            </div>
+            <button onclick="startGame(${idx})" class="retro-btn bg-emerald-500 hover:bg-emerald-400 text-black pixel-font text-[10px] px-3 py-2 rounded-lg">
+                MAINKAN ▶
+            </button>
+        `;
+        list.appendChild(item);
+    });
+    const m = document.getElementById('levelSelectModal');
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+    }
+}
+
+function closeLevelSelectModal() {
+    const m = document.getElementById('levelSelectModal');
+    if (m) {
+        m.style.display = 'none';
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+    }
+}
+
+/* ============================================================================
+   7. EVENT LISTENER KEYBOARD & TOMBOL LAYAR SENTUH (HP/TABLET/LAPTOP)
+   ============================================================================ */
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'KeyP' || e.code === 'Escape') {
+        if (gameRunning) togglePauseGame();
+        return;
+    }
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'].includes(e.code)) {
+        e.preventDefault();
+    }
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+    if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+    if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') {
+        keys.jump = true;
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+    if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+    if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') {
+        keys.jump = false;
+    }
+});
+
+function bindTouchBtn(btnId, keyName) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    const start = (e) => {
+        if (e.cancelable) e.preventDefault();
+        initAudio();
+        keys[keyName] = true;
+        btn.classList.add('pressed');
+    };
+    const end = (e) => {
+        if (e.cancelable) e.preventDefault();
+        keys[keyName] = false;
+        btn.classList.remove('pressed');
+    };
+    // Mendukung Mouse (Laptop/PC), Layar Sentuh HP/Tablet, dan Pena/Jari pada Papan Interaktif Digital (Pointer + Mouse + Touch Events)
+    btn.addEventListener('pointerdown', start);
+    btn.addEventListener('pointerup', end);
+    btn.addEventListener('pointerleave', end);
+    btn.addEventListener('pointercancel', end);
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('mouseup', end);
+    btn.addEventListener('mouseleave', end);
+    btn.addEventListener('touchstart', start, { passive: false });
+    btn.addEventListener('touchend', end, { passive: false });
+    btn.addEventListener('touchcancel', end, { passive: false });
+}
+
+bindTouchBtn('btnLeft', 'left');
+bindTouchBtn('btnRight', 'right');
+bindTouchBtn('btnJump', 'jump');
+
+// Ekspos fungsi ke global window agar semua tombol onclick berfungsi 100%
+window.startGame = startGame;
+window.togglePauseGame = togglePauseGame;
+window.returnToMainMenu = returnToMainMenu;
+window.openInfoModal = openInfoModal;
+window.closeInfoModal = closeInfoModal;
+window.openMateriModal = openMateriModal;
+window.closeMateriModal = closeMateriModal;
+window.openLevelSelectModal = openLevelSelectModal;
+window.closeLevelSelectModal = closeLevelSelectModal;
+window.replayCurrentLevel = replayCurrentLevel;
+window.goNextLevel = goNextLevel;
+window.toggleBGM = toggleBGM;
+window.toggleSFX = toggleSFX;
+window.teleportToActiveQuestion = teleportToActiveQuestion;
+window.toggleMinimizeQuestion = toggleMinimizeQuestion;
+window.cycleControlLayout = cycleControlLayout;
+window.cycleQuestionPosition = cycleQuestionPosition;
+window.toggleFullscreenMode = toggleFullscreenMode;
+
+// Main Loop Animasi
+let animationStarted = false;
+function animateLoop() {
+    updatePhysics();
+    drawGame();
+    requestAnimationFrame(animateLoop);
+}
+
+function initGameApp() {
+    if (animationStarted) return;
+    animationStarted = true;
+    resizeCanvas();
+    buildLevel(0);
+    animateLoop();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGameApp);
+} else {
+    initGameApp();
+}
+</script>
+</body>
+</html>
